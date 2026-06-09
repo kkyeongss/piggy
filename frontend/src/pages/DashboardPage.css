@@ -1,0 +1,281 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.dash-state {
+  padding: 80px 0;
+  text-align: center;
+  color: var(--text-tertiary);
+}
+.dash-state.is-error {
+  color: var(--danger);
+}
+
+/* 헤더 */
+.dash-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.dash-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.dash-subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+.dash-actions {
+  display: flex;
+  gap: 10px;
+}
+.quick-btn {
+  height: 44px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s ease, background 0.15s ease;
+}
+.quick-btn.income {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.quick-btn.income:hover {
+  background: #dbeafe;
+}
+.quick-btn.expense {
+  background: var(--primary);
+  color: #fff;
+}
+.quick-btn.expense:hover {
+  background: var(--primary-strong);
+}
+
+/* 카드 공통 */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px;
+}
+.card-title {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.card-sub {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+.card-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.card-center .card-title {
+  align-self: flex-start;
+}
+
+/* 분류별 지출 */
+.cat-body {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-top: 8px;
+}
+.cat-chart {
+  flex: 0 0 auto;
+}
+.cat-list {
+  flex: 1;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.cat-item {
+  display: grid;
+  grid-template-columns: 14px 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+.cat-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.cat-name {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.cat-pct {
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+.cat-amt {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.cat-empty {
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+/* 하단 3카드 */
+.card-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* 예산 */
+.budget-remain {
+  margin: 12px 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.budget-remain.over {
+  color: var(--danger);
+}
+.budget-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 0;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.budget-empty .btn {
+  width: auto;
+  padding: 0 20px;
+  height: 44px;
+}
+.text-link {
+  margin-top: 8px;
+  border: none;
+  background: none;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.text-link:hover {
+  color: var(--text-secondary);
+}
+
+/* 현금 */
+.cash-amount {
+  margin: 16px 0 4px;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.cash-note {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+.savings-list {
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+.savings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+}
+.savings-name {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.savings-amt {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.savings-hint {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+}
+
+/* 도넛 중앙 텍스트 */
+.donut-center {
+  font-size: 16px;
+  font-weight: 700;
+  fill: var(--text-primary);
+}
+.donut-sub {
+  font-size: 12px;
+  fill: var(--text-tertiary);
+}
+
+/* 라인차트 */
+.linechart {
+  margin-top: 8px;
+}
+.lc-axis {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+.lc-area {
+  fill: var(--primary-soft);
+}
+.lc-line {
+  stroke: var(--primary);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.lc-dot {
+  fill: #fff;
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+.lc-label {
+  font-size: 11px;
+  fill: var(--text-tertiary);
+}
+
+@media (max-width: 960px) {
+  .card-row {
+    grid-template-columns: 1fr;
+  }
+  .cat-body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cat-list {
+    width: 100%;
+  }
+}

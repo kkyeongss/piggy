@@ -1,0 +1,209 @@
+:root {
+  /* ===== Design tokens (Toss 계열) ===== */
+  --primary: #3182f6;
+  --primary-strong: #1b64da;
+  --primary-soft: rgba(49, 130, 246, 0.12);
+
+  --text-primary: #191f28;
+  --text-secondary: #4e5968;
+  --text-tertiary: #8b95a1;
+
+  --bg-page: #f2f4f6;
+  --bg-card: #ffffff;
+  --bg-input: #ffffff;
+  --bg-subtle: #f9fafb;
+
+  --border: #e5e8eb;
+  --border-strong: #d1d6db;
+
+  --danger: #f04452;
+  --success: #15c47e;
+
+  --radius-input: 12px;
+  --radius-card: 24px;
+
+  font-family: 'Pretendard', 'Pretendard Variable', system-ui, sans-serif;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ===== 다크 모드 ===== */
+:root[data-theme='dark'] {
+  --primary: #4593fc;
+  --primary-strong: #6aa9fd;
+  --primary-soft: rgba(69, 147, 252, 0.16);
+
+  --text-primary: #e7eaee;
+  --text-secondary: #aab2bd;
+  --text-tertiary: #707a86;
+
+  --bg-page: #16181c;
+  --bg-card: #1f2227;
+  --bg-input: #262a30;
+  --bg-subtle: #262a30;
+
+  --border: #2f343b;
+  --border-strong: #3c424a;
+
+  --danger: #ff5d6c;
+  --success: #2fd18d;
+}
+
+/* 다크 모드 하드코딩 색 보정 (밝은 hover 등) */
+:root[data-theme='dark'] .btn-ghost:hover:not(:disabled),
+:root[data-theme='dark'] .row-btn:hover,
+:root[data-theme='dark'] .cal-picker-month:hover {
+  background: #2f343b;
+}
+:root[data-theme='dark'] .row-btn:hover {
+  color: var(--text-secondary);
+}
+:root[data-theme='dark'] .manage-add:hover,
+:root[data-theme='dark'] .quick-btn.income:hover {
+  background: rgba(69, 147, 252, 0.22);
+}
+
+body,
+.app-content,
+.card,
+.input {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg-page);
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ===== 공통 폼 요소 ===== */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field > label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  font-size: 16px;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.input.has-error {
+  border-color: var(--danger);
+}
+
+.input:disabled {
+  background: var(--bg-subtle);
+  color: var(--text-tertiary);
+}
+
+/* ===== 버튼 ===== */
+.btn {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: var(--radius-input);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-strong);
+}
+
+.btn-ghost {
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: #eef0f2;
+}
+
+/* ===== 폼 메시지 ===== */
+.form-message {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.form-message.is-error {
+  color: var(--danger);
+}
+
+.form-message.is-success {
+  color: var(--success);
+}
+
+.field-hint {
+  font-size: 12px;
+  color: var(--danger);
+  margin: 0;
+}
+
+.field-note {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+select.input {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 42px;
+}

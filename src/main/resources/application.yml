@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: piggy
+
+  datasource:
+    # 내장 H2 파일 DB. 별도 설치 없이 ./data/piggy.mv.db 파일에 저장됨.
+    # (배포 단계에서는 사용자 홈 디렉터리 경로로 옮길 예정)
+    url: jdbc:h2:file:./data/piggy;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+  # 개발용 데이터 확인: http://localhost:8080/h2-console
+  h2:
+    console:
+      enabled: true
+
+server:
+  port: 8080

@@ -1,0 +1,146 @@
+.step-action {
+  margin-top: 20px;
+}
+
+/* ===== 약관 동의 ===== */
+.terms {
+  display: flex;
+  flex-direction: column;
+}
+
+.terms-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 2px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.terms-row input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex: 0 0 20px;
+}
+
+.terms-all {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.terms-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0 2px;
+}
+
+.terms-required {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.terms-optional {
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+/* ===== 휴대폰 인증 ===== */
+.code-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.code-row .input {
+  flex: 1;
+  letter-spacing: 4px;
+}
+
+.code-timer {
+  position: absolute;
+  right: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--danger);
+}
+
+.resend-btn {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  padding: 2px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.resend-btn:hover {
+  color: var(--text-secondary);
+}
+
+.dev-hint {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--bg-subtle);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.dev-hint b {
+  color: var(--primary);
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+/* ===== 완료 화면 ===== */
+.signup-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 0 12px;
+}
+
+.signup-done-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--success);
+  color: #fff;
+  margin-bottom: 16px;
+  animation: done-pop 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+
+.signup-done-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.signup-done-desc {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+
+@keyframes done-pop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signup-done-check {
+    animation: none;
+  }
+}

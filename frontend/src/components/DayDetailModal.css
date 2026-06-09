@@ -1,0 +1,142 @@
+.day-summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 16px;
+  background: var(--bg-subtle);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.day-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.day-summary-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.day-summary-value {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.day-summary-value.income {
+  color: var(--primary);
+}
+
+.day-summary-value.expense {
+  color: var(--danger);
+}
+
+.day-add {
+  margin-left: auto;
+  width: auto;
+  height: 38px;
+  padding: 0 16px;
+}
+
+.day-empty {
+  padding: 32px 0;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+.day-tx-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-tx {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.day-tx:last-child {
+  border-bottom: none;
+}
+
+.day-tx.clickable {
+  cursor: pointer;
+  border-radius: 10px;
+  margin: 0 -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  transition: background 0.15s ease;
+}
+.day-tx.clickable:hover {
+  background: var(--bg-subtle);
+}
+
+.day-hint {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.day-tx-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.day-tx-cat {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.day-tx-title {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.day-tx-memo {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.day-tx-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.day-tx-amt {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.day-tx-amt.income {
+  color: var(--primary);
+}
+
+.day-tx-amt.expense {
+  color: var(--danger);
+}
+
+.day-tx-pm {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.day-tx-actions {
+  display: flex;
+  gap: 2px;
+  margin-top: 2px;
+}

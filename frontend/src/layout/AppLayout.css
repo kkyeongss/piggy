@@ -1,0 +1,91 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  align-items: stretch;
+}
+
+.app-content {
+  flex: 1;
+  min-width: 0;
+  padding: 32px 36px;
+  transition: padding 0.25s ease;
+}
+
+/* 사이드바 접힘 상태 */
+.app-layout.collapsed .sidebar {
+  width: 0;
+  flex-basis: 0;
+  padding-left: 0;
+  padding-right: 0;
+  border-right: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-layout.collapsed .app-content {
+  padding-left: 72px;
+}
+
+/* 접힘 상태에서 다시 펼치는 플로팅 버튼 */
+.sidebar-open {
+  position: fixed;
+  top: 18px;
+  left: 16px;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: background 0.15s ease;
+}
+
+.sidebar-open:hover {
+  background: var(--bg-subtle);
+}
+
+.app-placeholder {
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.app-placeholder-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.app-placeholder-desc {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 720px) {
+  .app-layout {
+    flex-direction: column;
+  }
+  .app-content {
+    padding: 20px 16px;
+  }
+  .app-layout.collapsed .app-content {
+    padding-left: 16px;
+  }
+  .app-layout.collapsed .sidebar {
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+}

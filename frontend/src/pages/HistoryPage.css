@@ -1,0 +1,254 @@
+.history {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.hist-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.hist-monthnav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hist-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.hist-nav:hover {
+  background: var(--bg-subtle);
+}
+.hist-month {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text-primary);
+  min-width: 120px;
+  text-align: center;
+}
+.hist-today {
+  height: 32px;
+  padding: 0 12px;
+  margin-left: 4px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.hist-today:hover {
+  background: var(--bg-subtle);
+}
+
+.hist-add {
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 11px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.hist-add:hover {
+  background: var(--primary-strong);
+}
+
+.hist-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+.hist-sum-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+.hist-sum-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.hist-sum-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.hist-sum-value.income {
+  color: var(--primary);
+}
+.hist-sum-value.expense {
+  color: var(--danger);
+}
+.hist-sum-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border);
+}
+
+.hist-filter {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  margin-bottom: 16px;
+  background: var(--bg-subtle);
+  border-radius: 11px;
+}
+.hist-filter-tab {
+  border: none;
+  background: transparent;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.hist-filter-tab.active {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.hist-error {
+  color: var(--danger);
+  text-align: center;
+}
+
+.hist-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 64px 0;
+  color: var(--text-tertiary);
+}
+.hist-empty .btn {
+  width: auto;
+  padding: 0 20px;
+  height: 42px;
+}
+
+.hist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hist-day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.hist-day-date {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.hist-day-sum {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.hist-day-sum .income {
+  color: var(--primary);
+}
+.hist-day-sum .expense {
+  color: var(--danger);
+}
+
+.hist-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.hist-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.hist-row:hover {
+  background: var(--bg-subtle);
+}
+.hist-row-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.hist-row-cat {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.hist-row-title {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.hist-row-memo {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.hist-row-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.hist-row-amt {
+  font-size: 16px;
+  font-weight: 800;
+}
+.hist-row-amt.income {
+  color: var(--primary);
+}
+.hist-row-amt.expense {
+  color: var(--danger);
+}
+.hist-row-pm {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 640px) {
+  .hist-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hist-monthnav {
+    justify-content: center;
+  }
+}
