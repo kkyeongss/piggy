@@ -1,5 +1,26 @@
+import { useState, useEffect } from 'react'
 import AppLayout from './layout/AppLayout.jsx'
+import LoginPage from './pages/LoginPage.jsx'
 
 export default function App() {
-  return <AppLayout />
+  const [authChecked, setAuthChecked] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then(r => {
+        setLoggedIn(r.ok)
+        setAuthChecked(true)
+      })
+      .catch(() => {
+        setLoggedIn(false)
+        setAuthChecked(true)
+      })
+  }, [])
+
+  if (!authChecked) return null
+
+  return loggedIn
+    ? <AppLayout onLogout={() => setLoggedIn(false)} />
+    : <LoginPage onLogin={() => setLoggedIn(true)} />
 }

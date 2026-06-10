@@ -1,5 +1,6 @@
 package com.piggy.paymentmethod;
 
+import com.piggy.auth.SecurityUtils;
 import com.piggy.common.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,24 +19,27 @@ public class PaymentMethodService {
 
     @Transactional(readOnly = true)
     public List<PaymentMethod> list() {
-        return repository.findAllByOrderByNameAsc();
+        return repository.findByUserIdOrderByNameAsc(SecurityUtils.getCurrentUserId());
     }
 
     @Transactional
     public PaymentMethod create(String name) {
+        Long userId = SecurityUtils.getCurrentUserId();
         String n = name.trim();
-        if (repository.existsByName(n)) {
+        if (repository.existsByUserIdAndName(userId, n)) {
             throw new ApiException(HttpStatus.CONFLICT, "이미 등록된 지출방법이에요.");
         }
-        return repository.save(new PaymentMethod(n));
+        return repository.save(new PaymentMethod(userId, n));
     }
 
     @Transactional
     public PaymentMethod update(Long id, String name) {
+        Long userId = SecurityUtils.getCurrentUserId();
         String n = name.trim();
         PaymentMethod method = repository.findById(id)
+                .filter(m -> m.getUserId().equals(userId))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "지출방법을 찾을 수 없어요."));
-        if (repository.existsByNameAndIdNot(n, id)) {
+        if (repository.existsByUserIdAndNameAndIdNot(userId, n, id)) {
             throw new ApiException(HttpStatus.CONFLICT, "이미 등록된 지출방법이에요.");
         }
         method.rename(n);
@@ -44,9 +48,10 @@ public class PaymentMethodService {
 
     @Transactional
     public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "지출방법을 찾을 수 없어요.");
-        }
-        repository.deleteById(id);
+        Long userId = SecurityUtils.getCurrentUserId();
+        PaymentMethod method = repository.findById(id)
+                .filter(m -> m.getUserId().equals(userId))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "지출방법을 찾을 수 없어요."));
+        repository.delete(method);
     }
 }

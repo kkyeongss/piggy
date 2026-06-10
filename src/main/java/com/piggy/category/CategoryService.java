@@ -1,5 +1,6 @@
 package com.piggy.category;
 
+import com.piggy.auth.SecurityUtils;
 import com.piggy.common.ApiException;
 import com.piggy.transaction.TransactionType;
 import org.springframework.http.HttpStatus;
@@ -19,29 +20,33 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public List<Category> list() {
-        return repository.findAllByOrderByNameAsc();
+        return repository.findByUserIdOrderByNameAsc(SecurityUtils.getCurrentUserId());
     }
 
     @Transactional(readOnly = true)
     public List<String> savingsCategoryNames() {
-        return repository.findBySavingsTrue().stream().map(Category::getName).toList();
+        return repository.findByUserIdAndSavingsTrue(SecurityUtils.getCurrentUserId())
+                .stream().map(Category::getName).toList();
     }
 
     @Transactional
     public Category create(TransactionType type, String name, boolean savings) {
+        Long userId = SecurityUtils.getCurrentUserId();
         String n = name.trim();
-        if (repository.existsByName(n)) {
+        if (repository.existsByUserIdAndName(userId, n)) {
             throw new ApiException(HttpStatus.CONFLICT, "이미 등록된 카테고리 이름이에요.");
         }
-        return repository.save(new Category(type, n, savings));
+        return repository.save(new Category(userId, type, n, savings));
     }
 
     @Transactional
     public Category update(Long id, String name, boolean savings) {
+        Long userId = SecurityUtils.getCurrentUserId();
         String n = name.trim();
         Category category = repository.findById(id)
+                .filter(c -> c.getUserId().equals(userId))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없어요."));
-        if (repository.existsByNameAndIdNot(n, id)) {
+        if (repository.existsByUserIdAndNameAndIdNot(userId, n, id)) {
             throw new ApiException(HttpStatus.CONFLICT, "이미 등록된 카테고리 이름이에요.");
         }
         category.update(n, savings);
@@ -50,9 +55,10 @@ public class CategoryService {
 
     @Transactional
     public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없어요.");
-        }
-        repository.deleteById(id);
+        Long userId = SecurityUtils.getCurrentUserId();
+        Category category = repository.findById(id)
+                .filter(c -> c.getUserId().equals(userId))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없어요."));
+        repository.delete(category);
     }
 }

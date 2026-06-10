@@ -52,11 +52,15 @@ public class Transaction {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
     protected Transaction() {
     }
 
-    public Transaction(TransactionType type, BigDecimal amount, String category, String title,
+    public Transaction(Long userId, TransactionType type, BigDecimal amount, String category, String title,
                        String paymentMethod, String memo, LocalDate date) {
+        this.userId = userId;
         this.type = type;
         this.amount = amount;
         this.category = category;
@@ -116,5 +120,9 @@ public class Transaction {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 }

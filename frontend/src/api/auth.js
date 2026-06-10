@@ -29,6 +29,10 @@ export function login(loginId, password) {
   return request('/api/auth/login', { loginId, password })
 }
 
+export function quickLogin() {
+  return request('/api/auth/quick-login', {})
+}
+
 export function signup(payload) {
   // payload: { loginId, password, name, phone }
   return request('/api/auth/signup', payload)

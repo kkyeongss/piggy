@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { login, socialLogin, SOCIAL_PROVIDERS } from '../api/auth.js'
+import { login, quickLogin, socialLogin, SOCIAL_PROVIDERS } from '../api/auth.js'
 import SignupModal from '../components/SignupModal.jsx'
 import FindIdModal from '../components/FindIdModal.jsx'
 import FindPasswordModal from '../components/FindPasswordModal.jsx'
 import './LoginPage.css'
 
-export default function LoginPage() {
+export default function LoginPage({ onLogin }) {
   const [loginId, setLoginId] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -17,6 +17,18 @@ export default function LoginPage() {
 
   const canSubmit = loginId.trim() && password.trim() && !submitting
 
+  const handleQuickLogin = async () => {
+    setSubmitting(true)
+    try {
+      await quickLogin()
+      onLogin()
+    } catch (err) {
+      setError(err.message || '입장에 실패했어요.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!canSubmit) return
@@ -25,8 +37,7 @@ export default function LoginPage() {
     setSubmitting(true)
     try {
       await login(loginId.trim(), password)
-      // TODO: 로그인 성공 시 메인(가계부) 화면으로 이동
-      window.location.href = '/'
+      onLogin()
     } catch (err) {
       setError(err.message || '아이디 또는 비밀번호를 확인해주세요.')
     } finally {
@@ -92,10 +103,6 @@ export default function LoginPage() {
           </button>
         </nav>
 
-        <div className="login-divider">
-          <span>또는</span>
-        </div>
-
         <div className="social-list">
           {SOCIAL_PROVIDERS.map((p) => (
             <button
@@ -108,6 +115,24 @@ export default function LoginPage() {
               {p.label}
             </button>
           ))}
+        </div>
+
+        <div className="login-divider">
+          <span>또는</span>
+        </div>
+
+        <div className="quick-login-section">
+          <button
+            type="button"
+            className="btn btn-quick"
+            disabled={submitting}
+            onClick={handleQuickLogin}
+          >
+            바로 입장하기
+          </button>
+          <p className="quick-login-hint">
+            로그인 기능이 구현되어 있으나, 편의를 위해 바로 입장하셔도 됩니다.
+          </p>
         </div>
       </div>
 

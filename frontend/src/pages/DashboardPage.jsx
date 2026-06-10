@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import Donut from '../components/charts/Donut.jsx'
 import LineChart from '../components/charts/LineChart.jsx'
 import TransactionFormModal from '../components/TransactionFormModal.jsx'
-import BudgetModal from '../components/BudgetModal.jsx'
 import { getDashboard } from '../api/dashboard.js'
 import { won, CHART_COLORS } from '../util/format.js'
 import './DashboardPage.css'
@@ -16,7 +15,6 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [quickType, setQuickType] = useState(null)
-  const [budgetOpen, setBudgetOpen] = useState(false)
 
   const load = useCallback(async () => {
     setError('')
@@ -43,14 +41,6 @@ export default function DashboardPage() {
     value: Number(c.amount),
     color: CHART_COLORS[i % CHART_COLORS.length],
   }))
-
-  const budgetSet = data.monthlyBudget && Number(data.monthlyBudget) > 0
-  const rate = data.budgetUsedRate ?? 0
-  const over = rate > 1
-  const budgetSegments = [
-    { value: Math.min(rate, 1), color: over ? 'var(--danger)' : 'var(--primary)' },
-    { value: Math.max(1 - rate, 0), color: 'var(--bg-subtle)' },
-  ]
 
   const weekly = (data.weeklyExpenses ?? []).map((w) => ({ label: w.label, value: Number(w.amount) }))
 
@@ -97,35 +87,11 @@ export default function DashboardPage() {
       </section>
 
       <div className="card-row">
-        {/* 예산 소진율 */}
+        {/* 현재 사용할 수 있는 금액 */}
         <section className="card card-center">
-          <h2 className="card-title">예산 소진율</h2>
-          {budgetSet ? (
-            <>
-              <Donut
-                segments={budgetSegments}
-                size={140}
-                thickness={20}
-                centerLabel={`${Math.round(rate * 100)}%`}
-                centerSub={over ? '초과' : null}
-              />
-              <p className={`budget-remain${over ? ' over' : ''}`}>
-                {over
-                  ? `예산 초과 ${won(Math.abs(Number(data.budgetRemaining)))}`
-                  : `남은 금액 ${won(data.budgetRemaining)}`}
-              </p>
-              <button type="button" className="text-link" onClick={() => setBudgetOpen(true)}>
-                예산 수정
-              </button>
-            </>
-          ) : (
-            <div className="budget-empty">
-              <p>예산이 설정되지 않았어요.</p>
-              <button type="button" className="btn btn-ghost" onClick={() => setBudgetOpen(true)}>
-                예산 설정
-              </button>
-            </div>
-          )}
+          <h2 className="card-title">현재 사용할 수 있는 금액</h2>
+          <p className={`cash-amount${Number(data.availableCash) < 0 ? ' negative' : ''}`}>{won(data.availableCash)}</p>
+          <p className="cash-note">전체 현금에서 저축액을 뺀 금액</p>
         </section>
 
         {/* 현재 모은 현금 */}
@@ -157,9 +123,6 @@ export default function DashboardPage() {
 
       {quickType && (
         <TransactionFormModal mode="create" initial={{ type: quickType }} onClose={() => setQuickType(null)} onSaved={load} />
-      )}
-      {budgetOpen && (
-        <BudgetModal initial={Number(data.monthlyBudget) || 0} onClose={() => setBudgetOpen(false)} onSaved={load} />
       )}
     </div>
   )

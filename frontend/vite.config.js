@@ -11,4 +11,8 @@ export default defineConfig({
       '/api': 'http://localhost:8080',
     },
   },
+  build: {
+    outDir: '../src/main/resources/static',
+    emptyOutDir: true,
+  },
 })

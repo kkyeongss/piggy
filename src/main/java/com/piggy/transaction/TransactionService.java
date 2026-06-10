@@ -1,5 +1,6 @@
 package com.piggy.transaction;
 
+import com.piggy.auth.SecurityUtils;
 import com.piggy.common.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,27 +22,31 @@ public class TransactionService {
     @Transactional
     public Transaction create(TransactionType type, BigDecimal amount, String category, String title,
                               String paymentMethod, String memo, LocalDate date) {
+        Long userId = SecurityUtils.getCurrentUserId();
         return repository.save(new Transaction(
-                type, amount, category,
+                userId, type, amount, category,
                 blankToNull(title), blankToNull(paymentMethod), blankToNull(memo), date));
     }
 
     @Transactional(readOnly = true)
     public List<Transaction> findAll() {
-        return repository.findAllByOrderByDateDescIdDesc();
+        return repository.findByUserIdOrderByDateDescIdDesc(SecurityUtils.getCurrentUserId());
     }
 
     @Transactional(readOnly = true)
     public List<Transaction> findByMonth(int year, int month) {
+        Long userId = SecurityUtils.getCurrentUserId();
         LocalDate start = LocalDate.of(year, month, 1);
         LocalDate end = start.plusMonths(1).minusDays(1);
-        return repository.findByDateBetweenOrderByDateAscIdAsc(start, end);
+        return repository.findByUserIdAndDateBetweenOrderByDateAscIdAsc(userId, start, end);
     }
 
     @Transactional
     public Transaction update(Long id, TransactionType type, BigDecimal amount, String category, String title,
                               String paymentMethod, String memo, LocalDate date) {
+        Long userId = SecurityUtils.getCurrentUserId();
         Transaction tx = repository.findById(id)
+                .filter(t -> t.getUserId().equals(userId))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "거래를 찾을 수 없어요."));
         tx.update(type, amount, category,
                 blankToNull(title), blankToNull(paymentMethod), blankToNull(memo), date);
@@ -50,10 +55,11 @@ public class TransactionService {
 
     @Transactional
     public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "거래를 찾을 수 없어요.");
-        }
-        repository.deleteById(id);
+        Long userId = SecurityUtils.getCurrentUserId();
+        Transaction tx = repository.findById(id)
+                .filter(t -> t.getUserId().equals(userId))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "거래를 찾을 수 없어요."));
+        repository.delete(tx);
     }
 
     private static String blankToNull(String s) {

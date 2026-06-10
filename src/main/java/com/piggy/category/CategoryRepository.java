@@ -5,11 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    List<Category> findAllByOrderByNameAsc();
+    List<Category> findByUserIdOrderByNameAsc(Long userId);
 
-    boolean existsByName(String name);
+    boolean existsByUserIdAndName(Long userId, String name);
 
-    boolean existsByNameAndIdNot(String name, Long id);
+    boolean existsByUserIdAndNameAndIdNot(Long userId, String name, Long id);
 
-    List<Category> findBySavingsTrue();
+    List<Category> findByUserIdAndSavingsTrue(Long userId);
 }

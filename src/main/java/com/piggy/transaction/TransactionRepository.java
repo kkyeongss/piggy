@@ -10,23 +10,24 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    List<Transaction> findByTypeAndDateBetween(TransactionType type, LocalDate start, LocalDate end);
+    List<Transaction> findByUserIdAndTypeAndDateBetween(Long userId, TransactionType type, LocalDate start, LocalDate end);
 
-    List<Transaction> findAllByOrderByDateDescIdDesc();
+    List<Transaction> findByUserIdOrderByDateDescIdDesc(Long userId);
 
-    List<Transaction> findByDateBetweenOrderByDateAscIdAsc(LocalDate start, LocalDate end);
+    List<Transaction> findByUserIdAndDateBetweenOrderByDateAscIdAsc(Long userId, LocalDate start, LocalDate end);
 
     @Query("select coalesce(sum(t.amount), 0) from Transaction t "
-            + "where t.type = :type and t.date between :start and :end")
-    BigDecimal sumByTypeAndDateBetween(@Param("type") TransactionType type,
-                                       @Param("start") LocalDate start,
-                                       @Param("end") LocalDate end);
+            + "where t.userId = :userId and t.type = :type and t.date between :start and :end")
+    BigDecimal sumByUserIdAndTypeAndDateBetween(@Param("userId") Long userId,
+                                               @Param("type") TransactionType type,
+                                               @Param("start") LocalDate start,
+                                               @Param("end") LocalDate end);
 
-    @Query("select coalesce(sum(t.amount), 0) from Transaction t where t.type = :type")
-    BigDecimal sumByType(@Param("type") TransactionType type);
+    @Query("select coalesce(sum(t.amount), 0) from Transaction t where t.userId = :userId and t.type = :type")
+    BigDecimal sumByUserIdAndType(@Param("userId") Long userId, @Param("type") TransactionType type);
 
-    @Query("select coalesce(sum(t.amount), 0) from Transaction t where t.category in :names")
-    BigDecimal sumByCategoryIn(@Param("names") java.util.Collection<String> names);
+    @Query("select coalesce(sum(t.amount), 0) from Transaction t where t.userId = :userId and t.category in :names")
+    BigDecimal sumByUserIdAndCategoryIn(@Param("userId") Long userId, @Param("names") java.util.Collection<String> names);
 
-    List<Transaction> findByCategoryIn(java.util.Collection<String> names);
+    List<Transaction> findByUserIdAndCategoryIn(Long userId, java.util.Collection<String> names);
 }

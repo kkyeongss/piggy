@@ -10,14 +10,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 
 /** 거래 분류. 수입용/지출용 구분(type)과 저축 집계 여부(savings)를 가진다. */
 @Entity
-@Table(name = "categories", uniqueConstraints = @UniqueConstraint(name = "uk_categories_name", columnNames = "name"))
+@Table(name = "categories")
 public class Category {
 
     @Id
@@ -40,10 +39,14 @@ public class Category {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
     protected Category() {
     }
 
-    public Category(TransactionType type, String name, boolean savings) {
+    public Category(Long userId, TransactionType type, String name, boolean savings) {
+        this.userId = userId;
         this.type = type;
         this.name = name;
         this.savings = savings;
@@ -73,5 +76,9 @@ public class Category {
 
     public boolean isSavings() {
         return savings;
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 }

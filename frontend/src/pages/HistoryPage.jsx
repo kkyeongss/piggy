@@ -65,6 +65,9 @@ export default function HistoryPage() {
   }
   const goToday = () => { setYear(now.getFullYear()); setMonth(now.getMonth() + 1) }
 
+  // 전체/지출 → 지출, 수입 → 수입 으로 추가 폼 기본값 결정
+  const openAdd = () => setForm({ mode: 'create', initial: { type: typeFilter === 'INCOME' ? 'INCOME' : 'EXPENSE' } })
+
   return (
     <div className="history">
       <div className="hist-top">
@@ -78,7 +81,7 @@ export default function HistoryPage() {
           </button>
           <button type="button" className="hist-today" onClick={goToday}>오늘</button>
         </div>
-        <button type="button" className="hist-add" onClick={() => setForm({ mode: 'create', initial: {} })}>
+        <button type="button" className="hist-add" onClick={openAdd}>
           + 내역 추가
         </button>
       </div>
@@ -118,7 +121,7 @@ export default function HistoryPage() {
       {groups.length === 0 ? (
         <div className="hist-empty">
           <p>이 달의 내역이 없어요.</p>
-          <button type="button" className="btn btn-primary" onClick={() => setForm({ mode: 'create', initial: {} })}>
+          <button type="button" className="btn btn-primary" onClick={openAdd}>
             + 내역 추가
           </button>
         </div>

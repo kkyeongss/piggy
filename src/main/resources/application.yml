@@ -3,8 +3,7 @@ spring:
     name: piggy
 
   datasource:
-    # 내장 H2 파일 DB. 별도 설치 없이 ./data/piggy.mv.db 파일에 저장됨.
-    # (배포 단계에서는 사용자 홈 디렉터리 경로로 옮길 예정)
+    # 내장 H2 파일 DB. JAR와 같은 폴더의 data/ 에 저장 (./data/piggy.mv.db).
     url: jdbc:h2:file:./data/piggy;AUTO_SERVER=TRUE
     driver-class-name: org.h2.Driver
     username: sa
@@ -26,3 +25,8 @@ spring:
 
 server:
   port: 8080
+  address: 0.0.0.0
+
+# 실행 스크립트에서 -Dpiggy.open-browser=true 로 켜면 시작 시 브라우저 자동 오픈
+piggy:
+  open-browser: false

@@ -100,3 +100,16 @@
 .switch input:focus-visible + .switch-track {
   box-shadow: 0 0 0 3px var(--primary-soft);
 }
+.btn-logout {
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--danger, #e53e3e);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-logout:hover {
+  background: var(--danger-soft, rgba(229, 62, 62, 0.08));
+}

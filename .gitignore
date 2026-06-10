@@ -47,6 +47,8 @@ bin/
 # 프론트엔드 빌드 산출물 / 의존성
 /frontend/node_modules/
 /frontend/dist/
+# npm run build 결과물 — 커밋 불필요 (bootJar 시 자동 빌드됨)
+/src/main/resources/static/
 # 환경 변수
 .env
 .env.*

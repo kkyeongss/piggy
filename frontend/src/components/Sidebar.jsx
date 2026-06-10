@@ -12,9 +12,9 @@ export default function Sidebar({ active, onSelect, onCollapse }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-head">
-        <div className="sidebar-logo">
+        <button type="button" className="sidebar-logo" onClick={() => onSelect('dashboard')} aria-label="대시보드로 이동">
           piggy<span className="sidebar-logo-dot" />
-        </div>
+        </button>
         <button type="button" className="sidebar-collapse" aria-label="메뉴 접기" onClick={onCollapse}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 18l-6-6 6-6" />

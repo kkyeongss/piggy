@@ -190,6 +190,9 @@
   font-weight: 800;
   color: var(--text-primary);
 }
+.cash-amount.negative {
+  color: var(--danger);
+}
 .cash-note {
   margin: 0 0 14px;
   font-size: 13px;

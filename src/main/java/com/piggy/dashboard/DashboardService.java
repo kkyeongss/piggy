@@ -1,5 +1,6 @@
 package com.piggy.dashboard;
 
+import com.piggy.auth.SecurityUtils;
 import com.piggy.budget.BudgetService;
 import com.piggy.category.CategoryService;
 import com.piggy.dashboard.dto.DashboardResponse;
@@ -36,17 +37,19 @@ public class DashboardService {
 
     @Transactional(readOnly = true)
     public DashboardResponse getDashboard(int year, int month) {
+        Long userId = SecurityUtils.getCurrentUserId();
         YearMonth ym = YearMonth.of(year, month);
         LocalDate start = ym.atDay(1);
         LocalDate end = ym.atEndOfMonth();
 
-        BigDecimal totalIncome = transactionRepository.sumByTypeAndDateBetween(TransactionType.INCOME, start, end);
-        BigDecimal totalExpense = transactionRepository.sumByTypeAndDateBetween(TransactionType.EXPENSE, start, end);
+        BigDecimal totalIncome = transactionRepository
+                .sumByUserIdAndTypeAndDateBetween(userId, TransactionType.INCOME, start, end);
+        BigDecimal totalExpense = transactionRepository
+                .sumByUserIdAndTypeAndDateBetween(userId, TransactionType.EXPENSE, start, end);
 
-        List<Transaction> monthExpenses =
-                transactionRepository.findByTypeAndDateBetween(TransactionType.EXPENSE, start, end);
+        List<Transaction> monthExpenses = transactionRepository
+                .findByUserIdAndTypeAndDateBetween(userId, TransactionType.EXPENSE, start, end);
 
-        // 분류별 지출
         Map<String, BigDecimal> byCategory = new LinkedHashMap<>();
         for (Transaction t : monthExpenses) {
             byCategory.merge(t.getCategory(), t.getAmount(), BigDecimal::add);
@@ -56,18 +59,15 @@ public class DashboardService {
                 .map(e -> new CategoryExpense(e.getKey(), e.getValue()))
                 .toList();
 
-        // 주간 지출 추이 (지난달 ~ 이번달)
         List<WeeklyExpense> weeklyExpenses = new ArrayList<>();
         for (YearMonth m : List.of(ym.minusMonths(1), ym)) {
             LocalDate ms = m.atDay(1);
             LocalDate me = m.atEndOfMonth();
-            List<Transaction> exp =
-                    transactionRepository.findByTypeAndDateBetween(TransactionType.EXPENSE, ms, me);
+            List<Transaction> exp = transactionRepository
+                    .findByUserIdAndTypeAndDateBetween(userId, TransactionType.EXPENSE, ms, me);
             int weeks = (int) Math.ceil(m.lengthOfMonth() / 7.0);
             BigDecimal[] weekSums = new BigDecimal[weeks];
-            for (int i = 0; i < weeks; i++) {
-                weekSums[i] = BigDecimal.ZERO;
-            }
+            for (int i = 0; i < weeks; i++) weekSums[i] = BigDecimal.ZERO;
             for (Transaction t : exp) {
                 int idx = Math.min((t.getDate().getDayOfMonth() - 1) / 7, weeks - 1);
                 weekSums[idx] = weekSums[idx].add(t.getAmount());
@@ -77,7 +77,6 @@ public class DashboardService {
             }
         }
 
-        // 예산
         BigDecimal budget = budgetService.getMonthlyBudget();
         Double budgetUsedRate = null;
         BigDecimal budgetRemaining = null;
@@ -86,14 +85,11 @@ public class DashboardService {
             budgetRemaining = budget.subtract(totalExpense);
         }
 
-        // 저축성 금액 + 저축 카테고리별 누적
         List<String> savingsNames = categoryService.savingsCategoryNames();
         Map<String, BigDecimal> savByCat = new LinkedHashMap<>();
-        for (String n : savingsNames) {
-            savByCat.put(n, BigDecimal.ZERO);
-        }
+        for (String n : savingsNames) savByCat.put(n, BigDecimal.ZERO);
         if (!savingsNames.isEmpty()) {
-            for (Transaction t : transactionRepository.findByCategoryIn(savingsNames)) {
+            for (Transaction t : transactionRepository.findByUserIdAndCategoryIn(userId, savingsNames)) {
                 savByCat.merge(t.getCategory(), t.getAmount(), BigDecimal::add);
             }
         }
@@ -103,6 +99,10 @@ public class DashboardService {
                 .map(e -> new CategoryExpense(e.getKey(), e.getValue()))
                 .toList();
 
+        BigDecimal netCash = transactionRepository.sumByUserIdAndType(userId, TransactionType.INCOME)
+                .subtract(transactionRepository.sumByUserIdAndType(userId, TransactionType.EXPENSE));
+        BigDecimal availableCash = netCash.subtract(savingsTotal);
+
         return new DashboardResponse(
                 year, month,
                 totalIncome, totalExpense,
@@ -110,6 +110,7 @@ public class DashboardService {
                 budget, budgetUsedRate, budgetRemaining,
                 savingsTotal,
                 savingsBreakdown,
+                availableCash,
                 weeklyExpenses
         );
     }

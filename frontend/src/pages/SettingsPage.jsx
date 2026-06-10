@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { getTheme, setTheme } from '../util/theme.js'
 import './SettingsPage.css'
 
-export default function SettingsPage() {
+export default function SettingsPage({ onLogout }) {
   const [dark, setDark] = useState(getTheme() === 'dark')
 
   const toggleDark = () => {
@@ -41,6 +41,16 @@ export default function SettingsPage() {
           <div className="setting-row">
             <span className="setting-name">버전</span>
             <span className="setting-value">0.1.0</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="settings-group">
+        <h2 className="settings-group-title">계정</h2>
+        <div className="settings-card">
+          <div className="setting-row">
+            <span className="setting-name">로그아웃</span>
+            <button type="button" className="btn-logout" onClick={onLogout}>로그아웃</button>
           </div>
         </div>
       </section>

@@ -5,9 +5,10 @@ import ManagementPage from '../pages/ManagementPage.jsx'
 import CalendarPage from '../pages/CalendarPage.jsx'
 import HistoryPage from '../pages/HistoryPage.jsx'
 import SettingsPage from '../pages/SettingsPage.jsx'
+import { logout } from '../api/auth.js'
 import './AppLayout.css'
 
-export default function AppLayout() {
+export default function AppLayout({ onLogout }) {
   const [active, setActive] = useState('dashboard')
   const [collapsed, setCollapsed] = useState(false)
   const label = MENU_ITEMS.find((m) => m.key === active)?.label
@@ -29,7 +30,7 @@ export default function AppLayout() {
         {active === 'categories' && <ManagementPage />}
         {active === 'calendar' && <CalendarPage />}
         {active === 'transactions' && <HistoryPage />}
-        {active === 'settings' && <SettingsPage />}
+        {active === 'settings' && <SettingsPage onLogout={async () => { await logout(); onLogout() }} />}
         {active !== 'dashboard' && active !== 'categories' && active !== 'calendar' && active !== 'transactions' && active !== 'settings' && (
           <div className="app-placeholder">
             <p className="app-placeholder-title">{label}</p>

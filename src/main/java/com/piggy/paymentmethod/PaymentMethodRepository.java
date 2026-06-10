@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Long> {
-    List<PaymentMethod> findAllByOrderByNameAsc();
+    List<PaymentMethod> findByUserIdOrderByNameAsc(Long userId);
 
-    boolean existsByName(String name);
+    boolean existsByUserIdAndName(Long userId, String name);
 
-    boolean existsByNameAndIdNot(String name, Long id);
+    boolean existsByUserIdAndNameAndIdNot(Long userId, String name, Long id);
 }

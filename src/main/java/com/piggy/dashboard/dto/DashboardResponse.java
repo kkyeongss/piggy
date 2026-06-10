@@ -14,6 +14,7 @@ public record DashboardResponse(
         BigDecimal budgetRemaining,                // 예산-지출 (예산 0이면 null)
         BigDecimal savingsTotal,                   // 저축 카테고리 누적 금액
         List<CategoryExpense> savingsBreakdown,    // 저축 카테고리별 누적
+        BigDecimal availableCash,                  // 사용 가능 금액 (전체 현금 − 저축)
         List<WeeklyExpense> weeklyExpenses         // 주간 지출 추이
 ) {
     public record CategoryExpense(String category, BigDecimal amount) {
