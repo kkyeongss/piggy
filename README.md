@@ -81,15 +81,33 @@ cd .. && ./gradlew bootRun -x buildFrontend
 같은 와이파이에서 **http://[내 IP]:8080** 으로 접속.
 내 IP 확인: `ipconfig getifaddr en0`
 
-## 🧰 빌드
+## 🧰 빌드 & 배포
+
+### JAR 빌드
 
 ```bash
 # 프론트엔드 프로덕션 빌드 (src/main/resources/static/ 에 생성)
 cd frontend && npm run build
 
 # 실행 가능한 단일 JAR 생성 (build/libs/piggy.jar)
-./gradlew bootJar
+cd .. && ./gradlew bootJar
 ```
+
+### 다른 컴퓨터에서 실행하기
+
+Java 21만 설치되어 있으면 아래 3개 파일만 전달하면 됩니다.
+
+```
+📁 배포 폴더
+ ├── piggy.jar        ← JAR 빌드 결과물
+ ├── run_win.bat      ← Windows 더블클릭 실행
+ └── run_mac.command  ← Mac 더블클릭 실행
+```
+
+- **Windows**: `run_win.bat` 더블클릭
+- **Mac**: `run_mac.command` 더블클릭 (처음엔 우클릭 → 열기)
+- 실행 3초 후 브라우저가 자동으로 `http://localhost:8080`을 엽니다
+- 데이터도 함께 옮기려면 `data/piggy.mv.db` 파일도 같은 폴더에 복사
 
 ## 📝 참고
 
