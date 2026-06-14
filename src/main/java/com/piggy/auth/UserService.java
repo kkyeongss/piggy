@@ -55,6 +55,18 @@ public class UserService {
         user.changePassword(passwordEncoder.encode(newPassword));
     }
 
+    @Transactional(readOnly = true)
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없어요."));
+    }
+
+    @Transactional
+    public void updateTheme(Long userId, String theme) {
+        User user = findById(userId);
+        user.changeTheme(theme);
+    }
+
     /** 빠른 입장용 기본 계정 — 없으면 자동 생성 */
     @Transactional
     public User getOrCreateHomeUser() {

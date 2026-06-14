@@ -34,6 +34,9 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(nullable = false, length = 10)
+    private String theme = "light";
+
     protected User() {}
 
     public User(String loginId, String passwordHash, String name, String phone) {
@@ -52,9 +55,14 @@ public class User {
         this.passwordHash = newPasswordHash;
     }
 
+    public void changeTheme(String theme) {
+        this.theme = theme;
+    }
+
     public Long getId() { return id; }
     public String getLoginId() { return loginId; }
     public String getPasswordHash() { return passwordHash; }
     public String getName() { return name; }
     public String getPhone() { return phone; }
+    public String getTheme() { return theme; }
 }

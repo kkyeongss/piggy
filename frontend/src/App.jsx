@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import AppLayout from './layout/AppLayout.jsx'
 import LoginPage from './pages/LoginPage.jsx'
+import { setTheme } from './util/theme.js'
 
 export default function App() {
   const [authChecked, setAuthChecked] = useState(false)
@@ -8,8 +9,14 @@ export default function App() {
 
   useEffect(() => {
     fetch('/api/auth/me', { credentials: 'include' })
-      .then(r => {
-        setLoggedIn(r.ok)
+      .then(async r => {
+        if (r.ok) {
+          const data = await r.json()
+          if (data.theme) setTheme(data.theme)
+          setLoggedIn(true)
+        } else {
+          setLoggedIn(false)
+        }
         setAuthChecked(true)
       })
       .catch(() => {

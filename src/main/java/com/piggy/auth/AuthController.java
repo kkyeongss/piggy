@@ -21,7 +21,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,8 +57,21 @@ public class AuthController {
         if (auth == null || !auth.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        PiggyUserDetails user = (PiggyUserDetails) auth.getPrincipal();
-        return ResponseEntity.ok(Map.of("loginId", user.getUsername()));
+        PiggyUserDetails principal = (PiggyUserDetails) auth.getPrincipal();
+        User user = userService.findById(principal.getUserId());
+        return ResponseEntity.ok(Map.of("loginId", user.getLoginId(), "theme", user.getTheme()));
+    }
+
+    @PatchMapping("/me/theme")
+    @Transactional
+    public ResponseEntity<Void> updateTheme(@RequestBody Map<String, String> body, Authentication auth) {
+        String theme = body.get("theme");
+        if (!"light".equals(theme) && !"dark".equals(theme)) {
+            return ResponseEntity.badRequest().build();
+        }
+        PiggyUserDetails principal = (PiggyUserDetails) auth.getPrincipal();
+        userService.updateTheme(principal.getUserId(), theme);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/login")

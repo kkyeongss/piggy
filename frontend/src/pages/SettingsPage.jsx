@@ -5,10 +5,17 @@ import './SettingsPage.css'
 export default function SettingsPage({ onLogout }) {
   const [dark, setDark] = useState(getTheme() === 'dark')
 
-  const toggleDark = () => {
+  const toggleDark = async () => {
     const next = !dark
     setDark(next)
-    setTheme(next ? 'dark' : 'light')
+    const theme = next ? 'dark' : 'light'
+    setTheme(theme)
+    await fetch('/api/auth/me/theme', {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ theme }),
+    })
   }
 
   return (
