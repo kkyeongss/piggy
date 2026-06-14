@@ -23,7 +23,7 @@ export default function FindPasswordModal({ onClose }) {
     setError('')
     setSubmitting(true)
     try {
-      await findPassword(loginId, name, phone)
+      await findPassword(loginId, name, phone.replace(/-/g, ''))
       setStep('reset')
     } catch (err) {
       setError(err.message || '일치하는 정보를 찾지 못했어요.')
@@ -45,7 +45,7 @@ export default function FindPasswordModal({ onClose }) {
     setError('')
     setSubmitting(true)
     try {
-      await resetPassword(form.loginId, form.name, form.phone, password)
+      await resetPassword(form.loginId, form.name, form.phone.replace(/-/g, ''), password)
       setStep('done')
     } catch (err) {
       setError(err.message || '비밀번호 변경에 실패했어요.')
@@ -108,7 +108,7 @@ export default function FindPasswordModal({ onClose }) {
         <div className="field">
           <label htmlFor="fp-phone">핸드폰 번호</label>
           <input id="fp-phone" className="input" type="tel" inputMode="numeric" autoComplete="tel"
-            placeholder="010-0000-0000" value={form.phone} onChange={update('phone')} />
+            placeholder="01000000000" value={form.phone} onChange={update('phone')} />
         </div>
 
         {error && <p className="form-message is-error">{error}</p>}

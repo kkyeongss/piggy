@@ -79,7 +79,7 @@ export default function SignupModal({ onClose }) {
     setError('')
     setSubmitting(true)
     try {
-      const res = await sendPhoneCode(form.phone)
+      const res = await sendPhoneCode(form.phone.replace(/-/g, ''))
       setDevCode(res?.devCode ?? null)
       setCodeSent(true)
       setSecondsLeft(180)
@@ -98,12 +98,13 @@ export default function SignupModal({ onClose }) {
     setError('')
     setSubmitting(true)
     try {
-      await verifyPhoneCode(form.phone, code)
+      const phone = form.phone.replace(/-/g, '')
+      await verifyPhoneCode(phone, code)
       await signup({
         loginId: form.loginId,
         password: form.password,
         name: form.name,
-        phone: form.phone,
+        phone,
       })
       setShowDone(true)
       setTimeout(() => setFinishing(true), 1000) // 완료 후 모달 슬라이드다운
@@ -201,7 +202,7 @@ export default function SignupModal({ onClose }) {
               <div className="field">
                 <label htmlFor="su-phone">핸드폰 번호</label>
                 <input id="su-phone" className="input" type="tel" inputMode="numeric" autoComplete="tel"
-                  placeholder="010-0000-0000" value={form.phone} onChange={update('phone')} />
+                  placeholder="01000000000" value={form.phone} onChange={update('phone')} />
               </div>
               {step === 1 && error && <p className="form-message is-error">{error}</p>}
               <button type="button" className="btn btn-primary" onClick={handleInfoNext}>

@@ -19,7 +19,7 @@ export default function FindIdModal({ onClose }) {
     setError('')
     setSubmitting(true)
     try {
-      const data = await findId(name, phone)
+      const data = await findId(name, phone.replace(/-/g, ''))
       setResult(data ?? {})
     } catch (err) {
       setError(err.message || '일치하는 정보를 찾지 못했어요.')
@@ -54,7 +54,7 @@ export default function FindIdModal({ onClose }) {
         <div className="field">
           <label htmlFor="fi-phone">핸드폰 번호</label>
           <input id="fi-phone" className="input" type="tel" inputMode="numeric" autoComplete="tel"
-            placeholder="010-0000-0000" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            placeholder="01000000000" value={phone} onChange={(e) => setPhone(e.target.value)} />
         </div>
 
         {error && <p className="form-message is-error">{error}</p>}
