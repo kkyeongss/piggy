@@ -9,6 +9,7 @@ const TYPE_TABS = [
   { key: 'ALL', label: '전체' },
   { key: 'INCOME', label: '수입' },
   { key: 'EXPENSE', label: '지출' },
+  { key: 'SAVING', label: '저축' },
 ]
 
 function dayLabel(dateStr) {
@@ -34,12 +35,14 @@ export default function HistoryPage() {
 
   useEffect(() => { load() }, [load])
 
-  const { income, expense, groups } = useMemo(() => {
+  const { income, expense, saving, groups } = useMemo(() => {
     let inc = 0
     let exp = 0
+    let sav = 0
     for (const t of txs) {
       if (t.type === 'INCOME') inc += Number(t.amount)
-      else exp += Number(t.amount)
+      else if (t.type === 'EXPENSE') exp += Number(t.amount)
+      else if (t.type === 'SAVING') sav += Number(t.amount)
     }
     const filtered = typeFilter === 'ALL' ? txs : txs.filter((t) => t.type === typeFilter)
     const map = new Map()
@@ -52,9 +55,10 @@ export default function HistoryPage() {
       const items = map.get(date).slice().sort((a, b) => b.id - a.id)
       const dayInc = items.filter((t) => t.type === 'INCOME').reduce((s, t) => s + Number(t.amount), 0)
       const dayExp = items.filter((t) => t.type === 'EXPENSE').reduce((s, t) => s + Number(t.amount), 0)
-      return { date, items, dayInc, dayExp }
+      const daySav = items.filter((t) => t.type === 'SAVING').reduce((s, t) => s + Number(t.amount), 0)
+      return { date, items, dayInc, dayExp, daySav }
     })
-    return { income: inc, expense: exp, groups: grouped }
+    return { income: inc, expense: exp, saving: sav, groups: grouped }
   }, [txs, typeFilter])
 
   const goPrev = () => {
@@ -65,8 +69,10 @@ export default function HistoryPage() {
   }
   const goToday = () => { setYear(now.getFullYear()); setMonth(now.getMonth() + 1) }
 
-  // 전체/지출 → 지출, 수입 → 수입 으로 추가 폼 기본값 결정
-  const openAdd = () => setForm({ mode: 'create', initial: { type: typeFilter === 'INCOME' ? 'INCOME' : 'EXPENSE' } })
+  const openAdd = () => {
+    const t = typeFilter === 'INCOME' ? 'INCOME' : typeFilter === 'SAVING' ? 'SAVING' : 'EXPENSE'
+    setForm({ mode: 'create', initial: { type: t } })
+  }
 
   return (
     <div className="history">
@@ -98,8 +104,13 @@ export default function HistoryPage() {
         </div>
         <div className="hist-sum-divider" />
         <div className="hist-sum-item">
+          <span className="hist-sum-label">저축</span>
+          <span className="hist-sum-value saving">{won(saving)}</span>
+        </div>
+        <div className="hist-sum-divider" />
+        <div className="hist-sum-item">
           <span className="hist-sum-label">합계</span>
-          <span className="hist-sum-value">{won(income - expense)}</span>
+          <span className="hist-sum-value">{won(income - expense - saving)}</span>
         </div>
       </div>
 
@@ -134,6 +145,7 @@ export default function HistoryPage() {
                 <span className="hist-day-sum">
                   {g.dayInc > 0 && <span className="income">+{won(g.dayInc)}</span>}
                   {g.dayExp > 0 && <span className="expense">-{won(g.dayExp)}</span>}
+                  {g.daySav > 0 && <span className="saving">{won(g.daySav)}</span>}
                 </span>
               </div>
               <ul className="hist-rows">
@@ -152,8 +164,8 @@ export default function HistoryPage() {
                       {t.memo && <span className="hist-row-memo">{t.memo}</span>}
                     </div>
                     <div className="hist-row-right">
-                      <span className={`hist-row-amt ${t.type === 'INCOME' ? 'income' : 'expense'}`}>
-                        {t.type === 'INCOME' ? '+' : '-'}{won(t.amount)}
+                      <span className={`hist-row-amt ${t.type === 'INCOME' ? 'income' : t.type === 'SAVING' ? 'saving' : 'expense'}`}>
+                        {t.type === 'INCOME' ? '+' : ''}{won(t.amount)}
                       </span>
                       {t.paymentMethod && <span className="hist-row-pm">{t.paymentMethod}</span>}
                     </div>

@@ -30,4 +30,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     BigDecimal sumByUserIdAndCategoryIn(@Param("userId") Long userId, @Param("names") java.util.Collection<String> names);
 
     List<Transaction> findByUserIdAndCategoryIn(Long userId, java.util.Collection<String> names);
+
+    List<Transaction> findByUserIdAndType(Long userId, TransactionType type);
 }

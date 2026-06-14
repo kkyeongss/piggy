@@ -9,6 +9,7 @@ import './ManagementPage.css'
 const CATEGORY_TABS = [
   { key: 'EXPENSE', label: '지출' },
   { key: 'INCOME', label: '수입' },
+  { key: 'SAVING', label: '저축' },
 ]
 
 export default function ManagementPage() {
@@ -36,11 +37,11 @@ export default function ManagementPage() {
 
   useEffect(() => { load() }, [load])
 
-  const submitForm = async (name, savings) => {
+  const submitForm = async (name) => {
     const { kind, mode, item } = form
     if (kind === 'category') {
-      if (mode === 'create') await mgmt.createCategory(categoryType, name, savings)
-      else await mgmt.updateCategory(item.id, name, savings)
+      if (mode === 'create') await mgmt.createCategory(categoryType, name, false)
+      else await mgmt.updateCategory(item.id, name, false)
     } else {
       if (mode === 'create') await mgmt.createMethod(name)
       else await mgmt.updateMethod(item.id, name)
@@ -59,7 +60,7 @@ export default function ManagementPage() {
   if (error) return <div className="manage-state is-error">{error}</div>
 
   const shownCategories = categories.filter((c) => c.type === categoryType)
-  const typeLabel = categoryType === 'EXPENSE' ? '지출' : '수입'
+  const typeLabel = categoryType === 'EXPENSE' ? '지출' : categoryType === 'INCOME' ? '수입' : '저축'
 
   const formTitle = () => {
     if (form.kind === 'method') return `지출방법 ${form.mode === 'create' ? '등록' : '수정'}`
@@ -99,7 +100,6 @@ export default function ManagementPage() {
         <CategoryFormModal
           title={formTitle()}
           initialName={form.item?.name ?? ''}
-          initialSavings={form.item?.savings ?? false}
           submitLabel={form.mode === 'create' ? '등록' : '수정'}
           onSubmit={submitForm}
           onClose={() => setForm(null)}

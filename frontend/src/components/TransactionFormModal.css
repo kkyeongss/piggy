@@ -1,6 +1,6 @@
 .type-toggle {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 4px;
   padding: 4px;
   background: var(--bg-subtle);
@@ -29,6 +29,9 @@
 }
 .type-tab.active.income {
   color: var(--primary);
+}
+.type-tab.active.saving {
+  color: var(--success);
 }
 
 .form-actions {

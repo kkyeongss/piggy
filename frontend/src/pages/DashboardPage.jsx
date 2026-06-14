@@ -58,6 +58,9 @@ export default function DashboardPage() {
           <button type="button" className="quick-btn expense" onClick={() => setQuickType('EXPENSE')}>
             빠른 지출 입력
           </button>
+          <button type="button" className="quick-btn saving" onClick={() => setQuickType('SAVING')}>
+            빠른 저축 입력
+          </button>
         </div>
       </header>
 
@@ -96,9 +99,9 @@ export default function DashboardPage() {
 
         {/* 현재 모은 현금 */}
         <section className="card card-center">
-          <h2 className="card-title">현재 모은 현금</h2>
-          <p className="cash-amount">{won(data.savingsTotal)}</p>
-          <p className="cash-note">저축 카테고리 누적</p>
+          <h2 className="card-title">누적 저축</h2>
+          <p className="cash-amount saving">{won(data.savingsTotal)}</p>
+          <p className="cash-note">이번 달 저축: {won(data.totalSaving ?? 0)}</p>
           {(data.savingsBreakdown ?? []).length > 0 ? (
             <ul className="savings-list">
               {data.savingsBreakdown.map((s) => (
@@ -109,7 +112,7 @@ export default function DashboardPage() {
               ))}
             </ul>
           ) : (
-            <p className="savings-hint">‘카테고리/지출방법 관리’에서 카테고리를 ‘저축으로 집계’ 체크하면 여기에 표시돼요.</p>
+            <p className="savings-hint">저축 카테고리를 추가하고 내역을 입력하면 여기에 표시돼요.</p>
           )}
         </section>
 

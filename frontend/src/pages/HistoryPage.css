@@ -183,6 +183,12 @@
 .hist-day-sum .expense {
   color: var(--danger);
 }
+.hist-day-sum .saving {
+  color: var(--success);
+}
+.hist-sum-value.saving {
+  color: var(--success);
+}
 
 .hist-rows {
   list-style: none;
@@ -237,6 +243,9 @@
 }
 .hist-row-amt.expense {
   color: var(--danger);
+}
+.hist-row-amt.saving {
+  color: var(--success);
 }
 .hist-row-pm {
   font-size: 12px;

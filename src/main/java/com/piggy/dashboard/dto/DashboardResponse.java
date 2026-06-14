@@ -8,13 +8,14 @@ public record DashboardResponse(
         int month,
         BigDecimal totalIncome,
         BigDecimal totalExpense,
+        BigDecimal totalSaving,                    // 이번 달 저축 합계
         List<CategoryExpense> categoryExpenses,   // 분류별 지출
         BigDecimal monthlyBudget,                  // 0 이면 미설정
         Double budgetUsedRate,                     // 지출/예산 (예산 0이면 null)
         BigDecimal budgetRemaining,                // 예산-지출 (예산 0이면 null)
-        BigDecimal savingsTotal,                   // 저축 카테고리 누적 금액
-        List<CategoryExpense> savingsBreakdown,    // 저축 카테고리별 누적
-        BigDecimal availableCash,                  // 사용 가능 금액 (전체 현금 − 저축)
+        BigDecimal savingsTotal,                   // 저축 누적 금액 (전체 기간)
+        List<CategoryExpense> savingsBreakdown,    // 저축 항목별 누적
+        BigDecimal availableCash,                  // 사용 가능 금액 (전체 수입 − 지출 − 저축)
         List<WeeklyExpense> weeklyExpenses         // 주간 지출 추이
 ) {
     public record CategoryExpense(String category, BigDecimal amount) {

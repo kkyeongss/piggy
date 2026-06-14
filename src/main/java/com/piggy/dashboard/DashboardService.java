@@ -2,7 +2,6 @@ package com.piggy.dashboard;
 
 import com.piggy.auth.SecurityUtils;
 import com.piggy.budget.BudgetService;
-import com.piggy.category.CategoryService;
 import com.piggy.dashboard.dto.DashboardResponse;
 import com.piggy.dashboard.dto.DashboardResponse.CategoryExpense;
 import com.piggy.dashboard.dto.DashboardResponse.WeeklyExpense;
@@ -16,7 +15,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +24,10 @@ public class DashboardService {
 
     private final TransactionRepository transactionRepository;
     private final BudgetService budgetService;
-    private final CategoryService categoryService;
 
-    public DashboardService(TransactionRepository transactionRepository, BudgetService budgetService,
-                            CategoryService categoryService) {
+    public DashboardService(TransactionRepository transactionRepository, BudgetService budgetService) {
         this.transactionRepository = transactionRepository;
         this.budgetService = budgetService;
-        this.categoryService = categoryService;
     }
 
     @Transactional(readOnly = true)
@@ -46,6 +41,8 @@ public class DashboardService {
                 .sumByUserIdAndTypeAndDateBetween(userId, TransactionType.INCOME, start, end);
         BigDecimal totalExpense = transactionRepository
                 .sumByUserIdAndTypeAndDateBetween(userId, TransactionType.EXPENSE, start, end);
+        BigDecimal totalSaving = transactionRepository
+                .sumByUserIdAndTypeAndDateBetween(userId, TransactionType.SAVING, start, end);
 
         List<Transaction> monthExpenses = transactionRepository
                 .findByUserIdAndTypeAndDateBetween(userId, TransactionType.EXPENSE, start, end);
@@ -85,13 +82,11 @@ public class DashboardService {
             budgetRemaining = budget.subtract(totalExpense);
         }
 
-        List<String> savingsNames = categoryService.savingsCategoryNames();
+        // 누적 저축 (전체 기간)
+        List<Transaction> allSavings = transactionRepository.findByUserIdAndType(userId, TransactionType.SAVING);
         Map<String, BigDecimal> savByCat = new LinkedHashMap<>();
-        for (String n : savingsNames) savByCat.put(n, BigDecimal.ZERO);
-        if (!savingsNames.isEmpty()) {
-            for (Transaction t : transactionRepository.findByUserIdAndCategoryIn(userId, savingsNames)) {
-                savByCat.merge(t.getCategory(), t.getAmount(), BigDecimal::add);
-            }
+        for (Transaction t : allSavings) {
+            savByCat.merge(t.getCategory(), t.getAmount(), BigDecimal::add);
         }
         BigDecimal savingsTotal = savByCat.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
         List<CategoryExpense> savingsBreakdown = savByCat.entrySet().stream()
@@ -99,13 +94,15 @@ public class DashboardService {
                 .map(e -> new CategoryExpense(e.getKey(), e.getValue()))
                 .toList();
 
-        BigDecimal netCash = transactionRepository.sumByUserIdAndType(userId, TransactionType.INCOME)
-                .subtract(transactionRepository.sumByUserIdAndType(userId, TransactionType.EXPENSE));
-        BigDecimal availableCash = netCash.subtract(savingsTotal);
+        // 사용 가능 금액 = 전체 수입 − 전체 지출 − 전체 저축
+        BigDecimal allIncome = transactionRepository.sumByUserIdAndType(userId, TransactionType.INCOME);
+        BigDecimal allExpense = transactionRepository.sumByUserIdAndType(userId, TransactionType.EXPENSE);
+        BigDecimal allSavingsTotal = transactionRepository.sumByUserIdAndType(userId, TransactionType.SAVING);
+        BigDecimal availableCash = allIncome.subtract(allExpense).subtract(allSavingsTotal);
 
         return new DashboardResponse(
                 year, month,
-                totalIncome, totalExpense,
+                totalIncome, totalExpense, totalSaving,
                 categoryExpenses,
                 budget, budgetUsedRate, budgetRemaining,
                 savingsTotal,

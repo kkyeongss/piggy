@@ -60,6 +60,14 @@
 .quick-btn.expense:hover {
   background: var(--primary-strong);
 }
+.quick-btn.saving {
+  background: transparent;
+  border: 1.5px solid var(--success);
+  color: var(--success);
+}
+.quick-btn.saving:hover {
+  background: rgba(21, 196, 126, 0.1);
+}
 
 /* 카드 공통 */
 .card {
@@ -192,6 +200,9 @@
 }
 .cash-amount.negative {
   color: var(--danger);
+}
+.cash-amount.saving {
+  color: var(--success);
 }
 .cash-note {
   margin: 0 0 14px;

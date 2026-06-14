@@ -43,6 +43,8 @@ export default function TransactionFormModal({ mode = 'create', initial = {}, on
   }, [])
 
   const isIncome = type === 'INCOME'
+  const isSaving = type === 'SAVING'
+  const typeLabel = isIncome ? '수입' : isSaving ? '저축' : '지출'
   const typedCategories = categories.filter((c) => c.type === type)
 
   const changeType = (t) => {
@@ -93,11 +95,14 @@ export default function TransactionFormModal({ mode = 'create', initial = {}, on
     <Modal title={isEdit ? '내역 수정' : '내역 입력'} onClose={onClose}>
       <form className="modal-form" onSubmit={handleSubmit}>
         <div className="type-toggle">
-          <button type="button" className={`type-tab${!isIncome ? ' active expense' : ''}`} onClick={() => changeType('EXPENSE')}>
+          <button type="button" className={`type-tab${type === 'EXPENSE' ? ' active expense' : ''}`} onClick={() => changeType('EXPENSE')}>
             지출
           </button>
-          <button type="button" className={`type-tab${isIncome ? ' active income' : ''}`} onClick={() => changeType('INCOME')}>
+          <button type="button" className={`type-tab${type === 'INCOME' ? ' active income' : ''}`} onClick={() => changeType('INCOME')}>
             수입
+          </button>
+          <button type="button" className={`type-tab${type === 'SAVING' ? ' active saving' : ''}`} onClick={() => changeType('SAVING')}>
+            저축
           </button>
         </div>
 
@@ -111,7 +116,7 @@ export default function TransactionFormModal({ mode = 'create', initial = {}, on
         <div className="field">
           <label htmlFor="tf-title">제목 (선택)</label>
           <input id="tf-title" className="input" type="text" maxLength={100}
-            placeholder={isIncome ? '예: 6월 급여' : '예: 스타벅스, 마트 장보기'}
+            placeholder={isIncome ? '예: 6월 급여' : isSaving ? '예: 청약, 적금' : '예: 스타벅스, 마트 장보기'}
             value={title} onChange={(e) => setTitle(e.target.value)} />
         </div>
 
@@ -125,13 +130,13 @@ export default function TransactionFormModal({ mode = 'create', initial = {}, on
           </select>
           {typedCategories.length === 0 && (
             <p className="field-note">
-              등록된 {isIncome ? '수입' : '지출'} 카테고리가 없어요. ‘카테고리/지출방법 관리’에서 먼저 등록해주세요.
+              등록된 {typeLabel} 카테고리가 없어요. 카테고리/지출방법 관리에서 먼저 등록해주세요.
             </p>
           )}
         </div>
 
         <div className="field">
-          <label htmlFor="tf-method">{isIncome ? '입금 수단 (선택)' : '카드/결제수단 (선택)'}</label>
+          <label htmlFor="tf-method">{isIncome ? '입금 수단 (선택)' : isSaving ? '저축 수단 (선택)' : '카드/결제수단 (선택)'}</label>
           <select id="tf-method" className="input" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
             <option value="">선택 안 함</option>
             {methods.map((m) => (
@@ -171,7 +176,7 @@ export default function TransactionFormModal({ mode = 'create', initial = {}, on
               </button>
             )}
             <button type="submit" className="btn btn-primary" disabled={submitting}>
-              {submitting ? '저장 중...' : isEdit ? '수정' : isIncome ? '수입 추가' : '지출 추가'}
+              {submitting ? '저장 중...' : isEdit ? '수정' : isIncome ? '수입 추가' : isSaving ? '저축 추가' : '지출 추가'}
             </button>
           </div>
         )}
