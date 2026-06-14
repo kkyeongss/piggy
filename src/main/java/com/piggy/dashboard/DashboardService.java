@@ -94,11 +94,10 @@ public class DashboardService {
                 .map(e -> new CategoryExpense(e.getKey(), e.getValue()))
                 .toList();
 
-        // 사용 가능 금액 = 전체 수입 − 전체 지출 − 전체 저축
+        // 사용 가능 금액 = 전체 수입 − 전체 지출 (저축은 별도 카드에서 표시)
         BigDecimal allIncome = transactionRepository.sumByUserIdAndType(userId, TransactionType.INCOME);
         BigDecimal allExpense = transactionRepository.sumByUserIdAndType(userId, TransactionType.EXPENSE);
-        BigDecimal allSavingsTotal = transactionRepository.sumByUserIdAndType(userId, TransactionType.SAVING);
-        BigDecimal availableCash = allIncome.subtract(allExpense).subtract(allSavingsTotal);
+        BigDecimal availableCash = allIncome.subtract(allExpense);
 
         return new DashboardResponse(
                 year, month,

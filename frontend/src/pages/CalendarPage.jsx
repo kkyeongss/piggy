@@ -43,9 +43,10 @@ export default function CalendarPage() {
     const map = {}
     for (const t of txs) {
       const day = Number(t.date.slice(8, 10))
-      if (!map[day]) map[day] = { income: 0, expense: 0, items: [] }
+      if (!map[day]) map[day] = { income: 0, expense: 0, saving: 0, items: [] }
       if (t.type === 'INCOME') map[day].income += Number(t.amount)
-      else map[day].expense += Number(t.amount)
+      else if (t.type === 'EXPENSE') map[day].expense += Number(t.amount)
+      else if (t.type === 'SAVING') map[day].saving += Number(t.amount)
       map[day].items.push(t)
     }
     return map
@@ -146,10 +147,10 @@ export default function CalendarPage() {
               {data && (
                 <span className="cal-entries">
                   {data.items.slice(0, 3).map((t) => (
-                    <span key={t.id} className={`cal-entry ${t.type === 'INCOME' ? 'income' : 'expense'}`}>
+                    <span key={t.id} className={`cal-entry ${t.type === 'INCOME' ? 'income' : t.type === 'SAVING' ? 'saving' : 'expense'}`}>
                       {t.title && <span className="ce-title">{t.title}</span>}
                       {t.paymentMethod && <span className="ce-pm">{t.paymentMethod}</span>}
-                      <span className="ce-amt">{t.type === 'INCOME' ? '+' : '-'}{fmt(t.amount)}</span>
+                      <span className="ce-amt">{t.type === 'INCOME' ? '+' : ''}{fmt(t.amount)}</span>
                       <span className="ce-cat">{t.category}</span>
                     </span>
                   ))}

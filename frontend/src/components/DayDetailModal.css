@@ -1,11 +1,18 @@
 .day-summary {
   display: flex;
   align-items: center;
-  gap: 20px;
+  justify-content: space-between;
+  gap: 12px;
   padding: 14px 16px;
   background: var(--bg-subtle);
   border-radius: 12px;
   margin-bottom: 16px;
+}
+
+.day-summary-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 .day-summary-item {
@@ -24,16 +31,12 @@
   font-weight: 700;
 }
 
-.day-summary-value.income {
-  color: var(--primary);
-}
-
-.day-summary-value.expense {
-  color: var(--danger);
-}
+.day-summary-value.income { color: var(--primary); }
+.day-summary-value.expense { color: var(--danger); }
+.day-summary-value.saving { color: var(--success); }
 
 .day-add {
-  margin-left: auto;
+  flex-shrink: 0;
   width: auto;
   height: 38px;
   padding: 0 16px;
@@ -93,10 +96,39 @@
   min-width: 0;
 }
 
+.day-tx-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.day-tx-type-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+.day-tx-type-badge.income {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.day-tx-type-badge.expense {
+  background: rgba(240, 68, 82, 0.1);
+  color: var(--danger);
+}
+.day-tx-type-badge.saving {
+  background: rgba(21, 196, 126, 0.12);
+  color: var(--success);
+}
+
 .day-tx-cat {
   font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .day-tx-title {
@@ -122,21 +154,11 @@
   font-weight: 700;
 }
 
-.day-tx-amt.income {
-  color: var(--primary);
-}
-
-.day-tx-amt.expense {
-  color: var(--danger);
-}
+.day-tx-amt.income { color: var(--primary); }
+.day-tx-amt.expense { color: var(--danger); }
+.day-tx-amt.saving { color: var(--success); }
 
 .day-tx-pm {
   font-size: 12px;
   color: var(--text-tertiary);
-}
-
-.day-tx-actions {
-  display: flex;
-  gap: 2px;
-  margin-top: 2px;
 }

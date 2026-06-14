@@ -222,6 +222,9 @@
 .cal-entry.income {
   border-left-color: var(--primary);
 }
+.cal-entry.saving {
+  border-left-color: var(--success);
+}
 
 .cal-entry > span {
   display: block;
@@ -249,6 +252,9 @@
 }
 .cal-entry.income .ce-amt {
   color: var(--primary);
+}
+.cal-entry.saving .ce-amt {
+  color: var(--success);
 }
 .ce-cat {
   font-size: 10.5px;

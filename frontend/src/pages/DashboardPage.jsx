@@ -94,7 +94,7 @@ export default function DashboardPage() {
         <section className="card card-center">
           <h2 className="card-title">현재 사용할 수 있는 금액</h2>
           <p className={`cash-amount${Number(data.availableCash) < 0 ? ' negative' : ''}`}>{won(data.availableCash)}</p>
-          <p className="cash-note">전체 현금에서 저축액을 뺀 금액</p>
+          <p className="cash-note">전체 수입 − 전체 지출</p>
         </section>
 
         {/* 현재 모은 현금 */}
