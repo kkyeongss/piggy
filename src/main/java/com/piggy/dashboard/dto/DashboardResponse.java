@@ -10,6 +10,7 @@ public record DashboardResponse(
         BigDecimal totalExpense,
         BigDecimal totalSaving,                    // 이번 달 저축 합계
         List<CategoryExpense> categoryExpenses,   // 분류별 지출
+        List<CategoryExpense> incomeBreakdown,    // 이번 달 수입 내역
         BigDecimal monthlyBudget,                  // 0 이면 미설정
         Double budgetUsedRate,                     // 지출/예산 (예산 0이면 null)
         BigDecimal budgetRemaining,                // 예산-지출 (예산 0이면 null)

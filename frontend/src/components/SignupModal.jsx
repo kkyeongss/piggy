@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Modal from './Modal.jsx'
-import { sendPhoneCode, verifyPhoneCode, signup } from '../api/auth.js'
+import { checkLoginId, sendPhoneCode, verifyPhoneCode, signup } from '../api/auth.js'
 import './SignupModal.css'
 
 const STEP_TITLES = ['약관 동의', '정보 입력', '휴대폰 인증']
@@ -26,6 +26,20 @@ export default function SignupModal({ onClose }) {
   // 2단계: 정보 입력
   const [form, setForm] = useState({ loginId: '', password: '', passwordConfirm: '', name: '', phone: '' })
   const update = (key) => (e) => setForm({ ...form, [key]: e.target.value })
+
+  const [idToastKey, setIdToastKey] = useState(null)
+  const idToastTimer = useRef(null)
+
+  const handleLoginIdChange = (e) => {
+    const raw = e.target.value.toLowerCase()
+    const clean = raw.replace(/[^a-z0-9]/g, '')
+    if (clean !== raw) {
+      clearTimeout(idToastTimer.current)
+      setIdToastKey(Date.now())
+      idToastTimer.current = setTimeout(() => setIdToastKey(null), 2500)
+    }
+    setForm((prev) => ({ ...prev, loginId: clean }))
+  }
 
   // 3단계: 휴대폰 인증
   const [codeSent, setCodeSent] = useState(false)
@@ -62,7 +76,7 @@ export default function SignupModal({ onClose }) {
     goTo(1)
   }
 
-  const handleInfoNext = () => {
+  const handleInfoNext = async () => {
     const { loginId, password, passwordConfirm, name, phone } = form
     if (!loginId || !password || !name || !phone) {
       setError('모든 항목을 입력해주세요.')
@@ -72,7 +86,16 @@ export default function SignupModal({ onClose }) {
       setError('비밀번호가 일치하지 않아요.')
       return
     }
-    goTo(2)
+    setError('')
+    setSubmitting(true)
+    try {
+      await checkLoginId(loginId)
+      goTo(2)
+    } catch (err) {
+      setError(err.message || '아이디 확인에 실패했어요.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const handleSendCode = async () => {
@@ -181,8 +204,11 @@ export default function SignupModal({ onClose }) {
             <div className="modal-form">
               <div className="field">
                 <label htmlFor="su-loginId">아이디</label>
+                {idToastKey !== null && (
+                  <p key={idToastKey} className="id-toast">영문 소문자와 숫자만 입력할 수 있어요.</p>
+                )}
                 <input id="su-loginId" className="input" type="text" autoComplete="username"
-                  placeholder="사용할 아이디" value={form.loginId} onChange={update('loginId')} />
+                  placeholder="영문 소문자, 숫자" value={form.loginId} onChange={handleLoginIdChange} />
               </div>
               <div className="field">
                 <label htmlFor="su-password">비밀번호</label>
@@ -205,8 +231,8 @@ export default function SignupModal({ onClose }) {
                   placeholder="01000000000" value={form.phone} onChange={update('phone')} />
               </div>
               {step === 1 && error && <p className="form-message is-error">{error}</p>}
-              <button type="button" className="btn btn-primary" onClick={handleInfoNext}>
-                다음
+              <button type="button" className="btn btn-primary" onClick={handleInfoNext} disabled={submitting}>
+                {submitting ? '확인 중...' : '다음'}
               </button>
             </div>
           </div>

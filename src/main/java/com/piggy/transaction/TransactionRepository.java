@@ -32,4 +32,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByUserIdAndCategoryIn(Long userId, java.util.Collection<String> names);
 
     List<Transaction> findByUserIdAndType(Long userId, TransactionType type);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.data.jpa.repository.Query("update Transaction t set t.category = :newName where t.userId = :userId and t.category = :oldName")
+    int bulkRenameCategory(@org.springframework.data.repository.query.Param("userId") Long userId,
+                           @org.springframework.data.repository.query.Param("oldName") String oldName,
+                           @org.springframework.data.repository.query.Param("newName") String newName);
 }

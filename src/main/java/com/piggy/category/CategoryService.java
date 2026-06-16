@@ -2,6 +2,7 @@ package com.piggy.category;
 
 import com.piggy.auth.SecurityUtils;
 import com.piggy.common.ApiException;
+import com.piggy.transaction.TransactionRepository;
 import com.piggy.transaction.TransactionType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,11 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository repository;
+    private final TransactionRepository transactionRepository;
 
-    public CategoryService(CategoryRepository repository) {
+    public CategoryService(CategoryRepository repository, TransactionRepository transactionRepository) {
         this.repository = repository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Transactional(readOnly = true)
@@ -49,7 +52,11 @@ public class CategoryService {
         if (repository.existsByUserIdAndNameAndIdNot(userId, n, id)) {
             throw new ApiException(HttpStatus.CONFLICT, "이미 등록된 카테고리 이름이에요.");
         }
+        String oldName = category.getName();
         category.update(n, savings);
+        if (!oldName.equals(n)) {
+            transactionRepository.bulkRenameCategory(userId, oldName, n);
+        }
         return category;
     }
 

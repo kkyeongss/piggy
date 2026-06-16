@@ -71,21 +71,29 @@ export default function DashboardPage() {
           <div className="cat-chart">
             <Donut segments={catSegments} centerLabel="총 지출" centerSub={won(totalExpense)} tooltip />
           </div>
-          <ul className="cat-list">
-            {categories.length === 0 && <li className="cat-empty">이번 달 지출 내역이 없어요.</li>}
-            {categories.map((c, i) => {
-              const amt = Number(c.amount)
-              const pct = totalExpense > 0 ? Math.round((amt / totalExpense) * 100) : 0
-              return (
-                <li key={c.category} className="cat-item">
-                  <span className="cat-dot" style={{ background: CHART_COLORS[i % CHART_COLORS.length] }} />
-                  <span className="cat-name">{c.category}</span>
-                  <span className="cat-pct">{pct}%</span>
-                  <span className="cat-amt">{won(amt)}</span>
-                </li>
-              )
-            })}
-          </ul>
+          <div className="cat-right">
+            {categories.length > 0 && (
+              <div className="cat-total">
+                <span>합계</span>
+                <span>{won(totalExpense)}</span>
+              </div>
+            )}
+            <ul className="cat-list">
+              {categories.length === 0 && <li className="cat-empty">이번 달 지출 내역이 없어요.</li>}
+              {categories.map((c, i) => {
+                const amt = Number(c.amount)
+                const pct = totalExpense > 0 ? Math.round((amt / totalExpense) * 100) : 0
+                return (
+                  <li key={c.category} className="cat-item">
+                    <span className="cat-dot" style={{ background: CHART_COLORS[i % CHART_COLORS.length] }} />
+                    <span className="cat-name">{c.category}</span>
+                    <span className="cat-pct">{pct}%</span>
+                    <span className="cat-amt">{won(amt)}</span>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -95,6 +103,24 @@ export default function DashboardPage() {
           <h2 className="card-title">현재 사용할 수 있는 금액</h2>
           <p className={`cash-amount${Number(data.availableCash) < 0 ? ' negative' : ''}`}>{won(data.availableCash)}</p>
           <p className="cash-note">전체 수입 − 전체 지출</p>
+          <div className="income-section">
+            <div className="income-section-header">
+              <span>이번 달 수입</span>
+              <span className="income-section-total">{won(data.totalIncome)}</span>
+            </div>
+            {(data.incomeBreakdown ?? []).length > 0 ? (
+              <ul className="income-list">
+                {(data.incomeBreakdown ?? []).map((c) => (
+                  <li key={c.category} className="income-item">
+                    <span className="income-name">{c.category}</span>
+                    <span className="income-amt">+{won(c.amount)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="savings-hint">이번 달 수입 내역이 없어요.</p>
+            )}
+          </div>
         </section>
 
         {/* 현재 모은 현금 */}
@@ -118,8 +144,22 @@ export default function DashboardPage() {
 
         {/* 주간 지출 추이 */}
         <section className="card">
-          <h2 className="card-title">주간 지출 추이</h2>
-          <p className="card-sub">이번 달 주간 지출 합계</p>
+          <div className="card-title-row">
+            <h2 className="card-title">주간 지출 추이</h2>
+            <span className="weekly-info-wrap">
+              <svg className="weekly-info-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span className="weekly-tooltip">
+                매월 1일부터 7일 단위로 집계<br />
+                1주 1~7일 · 2주 8~14일<br />
+                3주 15~21일 · 4주 22~28일<br />
+                5주 29일~말일<br />
+                전월 + 당월 2개월 표시
+              </span>
+            </span>
+          </div>
+          <p className="card-sub">전월·당월 주간 지출 합계</p>
           <LineChart points={weekly} />
         </section>
       </div>

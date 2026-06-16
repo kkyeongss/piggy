@@ -2,6 +2,24 @@
   margin-top: 20px;
 }
 
+/* 아이디 입력 토스트 */
+.id-toast {
+  margin: 0 0 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(240, 68, 82, 0.08);
+  border: 1px solid rgba(240, 68, 82, 0.2);
+  font-size: 12px;
+  color: var(--danger);
+  animation: id-toast-fade 2.5s ease forwards;
+}
+
+@keyframes id-toast-fade {
+  0%   { opacity: 1; }
+  65%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 /* ===== 약관 동의 ===== */
 .terms {
   display: flex;

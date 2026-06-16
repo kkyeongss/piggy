@@ -107,6 +107,24 @@
 .cat-chart {
   flex: 0 0 auto;
 }
+.cat-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+.cat-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
 .cat-list {
   flex: 1;
   list-style: none;
@@ -243,6 +261,53 @@
   color: var(--text-tertiary);
 }
 
+/* 수입 내역 */
+.income-section {
+  width: 100%;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.income-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.income-section-total {
+  color: var(--primary);
+  font-size: 15px;
+}
+.income-list {
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 140px;
+  overflow-y: auto;
+}
+.income-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+}
+.income-name {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.income-amt {
+  color: var(--primary);
+  font-weight: 700;
+}
+
 /* 도넛 중앙 텍스트 */
 .donut-center {
   font-size: 16px;
@@ -252,6 +317,48 @@
 .donut-sub {
   font-size: 12px;
   fill: var(--text-tertiary);
+}
+
+/* 주간 추이 카드 타이틀 */
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.card-title-row .card-title {
+  margin: 0;
+}
+.weekly-info-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.weekly-info-icon {
+  color: var(--text-tertiary);
+  cursor: default;
+  flex-shrink: 0;
+}
+.weekly-tooltip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  white-space: nowrap;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  pointer-events: none;
+}
+.weekly-info-wrap:hover .weekly-tooltip {
+  display: block;
 }
 
 /* 라인차트 */

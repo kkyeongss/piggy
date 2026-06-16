@@ -4,9 +4,21 @@ import './DayDetailModal.css'
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
 
-export default function DayDetailModal({ dateStr, items = [], onClose, onAdd, onEdit }) {
+export default function DayDetailModal({ dateStr, items = [], onClose, onAdd, onEdit, onPrev, onNext }) {
   const d = new Date(dateStr)
-  const title = `${d.getMonth() + 1}월 ${d.getDate()}일 (${WEEKDAYS[d.getDay()]})`
+  const dateLabel = `${d.getMonth() + 1}월 ${d.getDate()}일 (${WEEKDAYS[d.getDay()]})`
+
+  const title = (
+    <span className="day-title-nav">
+      <button type="button" className="day-nav-btn" onClick={onPrev} aria-label="이전 날">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+      </button>
+      <span>{dateLabel}</span>
+      <button type="button" className="day-nav-btn" onClick={onNext} aria-label="다음 날">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+      </button>
+    </span>
+  )
 
   const income = items.filter((t) => t.type === 'INCOME').reduce((s, t) => s + Number(t.amount), 0)
   const expense = items.filter((t) => t.type === 'EXPENSE').reduce((s, t) => s + Number(t.amount), 0)
@@ -16,20 +28,16 @@ export default function DayDetailModal({ dateStr, items = [], onClose, onAdd, on
     <Modal title={title} onClose={onClose} wide>
       <div className="day-summary">
         <div className="day-summary-row">
-          <div className="day-summary-item">
-            <span className="day-summary-label">수입</span>
-            <span className="day-summary-value income">+{won(income)}</span>
-          </div>
-          <div className="day-summary-item">
-            <span className="day-summary-label">지출</span>
-            <span className="day-summary-value expense">-{won(expense)}</span>
-          </div>
-          {saving > 0 && (
-            <div className="day-summary-item">
-              <span className="day-summary-label">저축</span>
-              <span className="day-summary-value saving">{won(saving)}</span>
-            </div>
-          )}
+          <span className="day-summary-label">수입</span>
+          <span className="day-summary-value income">+{won(income)}</span>
+        </div>
+        <div className="day-summary-row">
+          <span className="day-summary-label">지출</span>
+          <span className="day-summary-value expense">-{won(expense)}</span>
+        </div>
+        <div className="day-summary-row">
+          <span className="day-summary-label">저축</span>
+          <span className="day-summary-value saving">{won(saving)}</span>
         </div>
         {onAdd && (
           <button type="button" className="btn btn-primary day-add" onClick={() => onAdd(dateStr)}>

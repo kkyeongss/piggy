@@ -36,6 +36,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public boolean isLoginIdTaken(String loginId) {
+        return userRepository.existsByLoginId(loginId);
+    }
+
+    @Transactional(readOnly = true)
     public String findLoginId(String name, String phone) {
         return userRepository.findByNameAndPhone(name, phone)
                 .map(User::getLoginId)

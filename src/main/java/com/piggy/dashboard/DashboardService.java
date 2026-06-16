@@ -44,6 +44,17 @@ public class DashboardService {
         BigDecimal totalSaving = transactionRepository
                 .sumByUserIdAndTypeAndDateBetween(userId, TransactionType.SAVING, start, end);
 
+        List<Transaction> monthIncomes = transactionRepository
+                .findByUserIdAndTypeAndDateBetween(userId, TransactionType.INCOME, start, end);
+        Map<String, BigDecimal> byIncomeCategory = new LinkedHashMap<>();
+        for (Transaction t : monthIncomes) {
+            byIncomeCategory.merge(t.getCategory(), t.getAmount(), BigDecimal::add);
+        }
+        List<CategoryExpense> incomeBreakdown = byIncomeCategory.entrySet().stream()
+                .sorted(Map.Entry.<String, BigDecimal>comparingByValue().reversed())
+                .map(e -> new CategoryExpense(e.getKey(), e.getValue()))
+                .toList();
+
         List<Transaction> monthExpenses = transactionRepository
                 .findByUserIdAndTypeAndDateBetween(userId, TransactionType.EXPENSE, start, end);
 
@@ -103,6 +114,7 @@ public class DashboardService {
                 year, month,
                 totalIncome, totalExpense, totalSaving,
                 categoryExpenses,
+                incomeBreakdown,
                 budget, budgetUsedRate, budgetRemaining,
                 savingsTotal,
                 savingsBreakdown,

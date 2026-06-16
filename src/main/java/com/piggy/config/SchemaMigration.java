@@ -7,9 +7,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-/**
- * TransactionType 에 SAVING 추가 시 H2의 컬럼 CHECK 제약을 갱신.
- */
+import java.util.List;
+
 @Component
 public class SchemaMigration implements ApplicationRunner {
 
@@ -23,26 +22,49 @@ public class SchemaMigration implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        // H2 2.x: ALTER COLUMN ... SET CHECK 로 기존 인라인 체크 제약을 교체
-        try {
-            jdbc.execute("ALTER TABLE transactions ALTER COLUMN type SET CHECK " +
-                         "(type IN ('INCOME', 'EXPENSE', 'SAVING'))");
-            log.info("SchemaMigration: transactions.type CHECK 제약 업데이트 완료");
-        } catch (Exception e) {
-            log.warn("SchemaMigration SET CHECK 실패, 다른 방법 시도: {}", e.getMessage());
-            tryFallback();
-        }
+        fixEnumCheck("transactions");
+        fixEnumCheck("categories");
     }
 
-    private void tryFallback() {
-        // fallback: 컬럼 타입 재정의로 기존 check 제거 후 재추가
+    private void fixEnumCheck(String table) {
+        String upperTable = table.toUpperCase();
+
+        // INFORMATION_SCHEMA에서 실제 CHECK 제약 이름을 조회해 정확히 삭제
+        List<String> names = List.of();
         try {
-            jdbc.execute("ALTER TABLE transactions ALTER COLUMN type varchar(10) NOT NULL");
-            jdbc.execute("ALTER TABLE transactions ADD CONSTRAINT ck_tx_type " +
+            names = jdbc.queryForList(
+                "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS " +
+                "WHERE TABLE_NAME = ? AND CONSTRAINT_TYPE = 'CHECK'",
+                String.class, upperTable
+            );
+        } catch (Exception e) {
+            log.debug("SchemaMigration: {} 제약 조회 실패 - {}", table, e.getMessage());
+        }
+
+        for (String name : names) {
+            try {
+                // 정확한 이름(대소문자 포함)으로 따옴표 처리해 삭제
+                jdbc.execute("ALTER TABLE " + table + " DROP CONSTRAINT IF EXISTS \"" + name + "\"");
+                log.info("SchemaMigration: {}.type 기존 CHECK 삭제: {}", table, name);
+            } catch (Exception e) {
+                log.debug("SchemaMigration: {} 제약 {} 삭제 실패 - {}", table, name, e.getMessage());
+            }
+        }
+
+        // 인라인 제약도 제거 (ALTER COLUMN은 컬럼 레벨 CHECK를 드롭함)
+        try {
+            jdbc.execute("ALTER TABLE " + table + " ALTER COLUMN type varchar(10) NOT NULL");
+        } catch (Exception e) {
+            log.debug("SchemaMigration: {}.type ALTER COLUMN 스킵 - {}", table, e.getMessage());
+        }
+
+        // 올바른 제약 추가
+        try {
+            jdbc.execute("ALTER TABLE " + table + " ADD CONSTRAINT CK_" + upperTable + "_TYPE " +
                          "CHECK (type IN ('INCOME', 'EXPENSE', 'SAVING'))");
-            log.info("SchemaMigration fallback 완료");
-        } catch (Exception e2) {
-            log.warn("SchemaMigration fallback 실패: {}", e2.getMessage());
+            log.info("SchemaMigration: {}.type CHECK 업데이트 완료", table);
+        } catch (Exception e) {
+            log.warn("SchemaMigration: {}.type ADD CONSTRAINT 실패 - {}", table, e.getMessage());
         }
     }
 }

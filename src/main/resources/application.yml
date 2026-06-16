@@ -4,7 +4,7 @@ spring:
 
   datasource:
     # 내장 H2 파일 DB. JAR와 같은 폴더의 data/ 에 저장 (./data/piggy.mv.db).
-    url: jdbc:h2:file:./data/piggy;AUTO_SERVER=TRUE
+    url: jdbc:h2:file:./data/piggy;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: sa
     password:

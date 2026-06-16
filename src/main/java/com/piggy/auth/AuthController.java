@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -100,6 +101,14 @@ public class AuthController {
         if (session != null) session.invalidate();
         SecurityContextHolder.clearContext();
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/check-id")
+    public ResponseEntity<Void> checkId(@RequestParam String loginId) {
+        if (userService.isLoginIdTaken(loginId)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signup")

@@ -76,6 +76,34 @@ export default function CalendarPage() {
     ? `${year}-${String(month).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`
     : null
 
+  const handlePrevDay = () => {
+    if (selectedDay === 1) {
+      let newMonth = month - 1
+      let newYear = year
+      if (newMonth === 0) { newMonth = 12; newYear = year - 1 }
+      const lastDay = new Date(newYear, newMonth, 0).getDate()
+      setYear(newYear)
+      setMonth(newMonth)
+      setSelectedDay(lastDay)
+    } else {
+      setSelectedDay((d) => d - 1)
+    }
+  }
+
+  const handleNextDay = () => {
+    const lastDay = new Date(year, month, 0).getDate()
+    if (selectedDay === lastDay) {
+      let newMonth = month + 1
+      let newYear = year
+      if (newMonth === 13) { newMonth = 1; newYear = year + 1 }
+      setYear(newYear)
+      setMonth(newMonth)
+      setSelectedDay(1)
+    } else {
+      setSelectedDay((d) => d + 1)
+    }
+  }
+
   return (
     <div className="calendar">
       <div className="cal-header">
@@ -146,7 +174,7 @@ export default function CalendarPage() {
               <span className={`cal-daynum${weekday === 0 ? ' sun' : ''}${weekday === 6 ? ' sat' : ''}`}>{d}</span>
               {data && (
                 <span className="cal-entries">
-                  {data.items.slice(0, 3).map((t) => (
+                  {data.items.map((t) => (
                     <span key={t.id} className={`cal-entry ${t.type === 'INCOME' ? 'income' : t.type === 'SAVING' ? 'saving' : 'expense'}`}>
                       {t.title && <span className="ce-title">{t.title}</span>}
                       {t.paymentMethod && <span className="ce-pm">{t.paymentMethod}</span>}
@@ -154,7 +182,6 @@ export default function CalendarPage() {
                       <span className="ce-cat">{t.category}</span>
                     </span>
                   ))}
-                  {data.items.length > 3 && <span className="cal-more">+{data.items.length - 3}건 더</span>}
                 </span>
               )}
             </button>
@@ -169,6 +196,8 @@ export default function CalendarPage() {
           onClose={() => setSelectedDay(null)}
           onAdd={(dateStr) => setForm({ mode: 'create', initial: { date: dateStr } })}
           onEdit={(t) => setForm({ mode: 'edit', initial: t })}
+          onPrev={handlePrevDay}
+          onNext={handleNextDay}
         />
       )}
 

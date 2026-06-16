@@ -57,6 +57,14 @@ export function resetPassword(loginId, name, phone, newPassword) {
 }
 
 // 휴대폰 인증번호 발송 (응답의 devCode 는 개발용 — 실제 SMS 연동 시 제거)
+export async function checkLoginId(loginId) {
+  const res = await fetch(`/api/auth/check-id?loginId=${encodeURIComponent(loginId)}`, {
+    credentials: 'include',
+  })
+  if (res.status === 409) throw new Error('이미 사용 중인 아이디에요.')
+  if (!res.ok) throw new Error('아이디 확인에 실패했어요.')
+}
+
 export function sendPhoneCode(phone) {
   return request('/api/auth/phone/send-code', { phone })
 }
