@@ -1,6 +1,7 @@
 package com.piggy.transaction;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -33,9 +34,17 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findByUserIdAndType(Long userId, TransactionType type);
 
-    @org.springframework.data.jpa.repository.Modifying
-    @org.springframework.data.jpa.repository.Query("update Transaction t set t.category = :newName where t.userId = :userId and t.category = :oldName")
-    int bulkRenameCategory(@org.springframework.data.repository.query.Param("userId") Long userId,
-                           @org.springframework.data.repository.query.Param("oldName") String oldName,
-                           @org.springframework.data.repository.query.Param("newName") String newName);
+    @Modifying
+    @Query("update Transaction t set t.category = :newName where t.userId = :userId and t.category = :oldName")
+    int bulkRenameCategory(@Param("userId") Long userId,
+                           @Param("oldName") String oldName,
+                           @Param("newName") String newName);
+
+    @Modifying
+    @Query("delete from Transaction t where t.userId = :userId and t.type = :type")
+    int deleteByUserIdAndType(@Param("userId") Long userId, @Param("type") TransactionType type);
+
+    @Modifying
+    @Query("delete from Transaction t where t.userId = :userId")
+    int deleteByUserId(@Param("userId") Long userId);
 }

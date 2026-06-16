@@ -2,8 +2,36 @@ import { useState } from 'react'
 import { getTheme, setTheme } from '../util/theme.js'
 import './SettingsPage.css'
 
+const RESET_ITEMS = [
+  { target: 'income-transactions',  name: '수입 내역',     desc: '등록된 모든 수입 거래를 삭제해요' },
+  { target: 'expense-transactions', name: '지출 내역',     desc: '등록된 모든 지출 거래를 삭제해요' },
+  { target: 'saving-transactions',  name: '저축 내역',     desc: '등록된 모든 저축 거래를 삭제해요' },
+  { target: 'income-categories',    name: '수입 카테고리', desc: '등록된 수입 카테고리를 모두 삭제해요' },
+  { target: 'expense-categories',   name: '지출 카테고리', desc: '등록된 지출 카테고리를 모두 삭제해요' },
+  { target: 'saving-categories',    name: '저축 카테고리', desc: '등록된 저축 카테고리를 모두 삭제해요' },
+  { target: 'payment-methods',      name: '지출방법',      desc: '등록된 결제수단을 모두 삭제해요' },
+  { target: 'all',                  name: '전체 초기화',   desc: '모든 거래·카테고리·지출방법을 삭제해요', danger: true },
+]
+
 export default function SettingsPage({ onLogout }) {
   const [dark, setDark] = useState(getTheme() === 'dark')
+  const [confirming, setConfirming] = useState(null)
+  const [resetting, setResetting] = useState(false)
+  const [resetDone, setResetDone] = useState(null)
+
+  const handleReset = async (target) => {
+    setResetting(true)
+    try {
+      await fetch(`/api/reset/${target}`, { method: 'DELETE', credentials: 'include' })
+      setConfirming(null)
+      setResetDone(target)
+      setTimeout(() => setResetDone(null), 2000)
+    } catch {
+      alert('초기화에 실패했어요. 다시 시도해주세요.')
+    } finally {
+      setResetting(false)
+    }
+  }
 
   const toggleDark = async () => {
     const next = !dark
@@ -49,6 +77,36 @@ export default function SettingsPage({ onLogout }) {
             <span className="setting-name">버전</span>
             <span className="setting-value">0.1.0</span>
           </div>
+        </div>
+      </section>
+
+      <section className="settings-group">
+        <h2 className="settings-group-title">데이터 초기화</h2>
+        <div className="settings-card">
+          {RESET_ITEMS.map((item) => (
+            <div key={item.target} className={`setting-row${item.danger ? ' reset-row-danger' : ''}`}>
+              <div className="setting-label">
+                <span className="setting-name">{item.name}</span>
+                <span className="setting-desc">{item.desc}</span>
+              </div>
+              {resetDone === item.target ? (
+                <span className="reset-done">삭제됨</span>
+              ) : confirming === item.target ? (
+                <div className="reset-confirm">
+                  <button type="button" className="btn-reset-cancel" onClick={() => setConfirming(null)}>취소</button>
+                  <button type="button" className={`btn-reset-ok${item.danger ? ' danger' : ''}`}
+                    onClick={() => handleReset(item.target)} disabled={resetting}>
+                    {resetting ? '삭제 중…' : '삭제'}
+                  </button>
+                </div>
+              ) : (
+                <button type="button" className={`btn-reset${item.danger ? ' danger' : ''}`}
+                  onClick={() => setConfirming(item.target)}>
+                  초기화
+                </button>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
