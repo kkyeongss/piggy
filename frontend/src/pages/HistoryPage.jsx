@@ -110,7 +110,7 @@ export default function HistoryPage() {
         <div className="hist-sum-divider" />
         <div className="hist-sum-item">
           <span className="hist-sum-label">합계</span>
-          <span className="hist-sum-value">{won(income - expense - saving)}</span>
+          <span className="hist-sum-value">{won(income - expense)}</span>
         </div>
       </div>
 

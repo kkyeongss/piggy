@@ -102,7 +102,7 @@ export default function DashboardPage() {
         <section className="card card-center">
           <h2 className="card-title">현재 사용할 수 있는 금액</h2>
           <p className={`cash-amount${Number(data.availableCash) < 0 ? ' negative' : ''}`}>{won(data.availableCash)}</p>
-          <p className="cash-note">전체 수입 − 전체 지출</p>
+          <p className="cash-note">전체 수입 − 전체 지출 − 전체 저축</p>
           <div className="income-section">
             <div className="income-section-header">
               <span>이번 달 수입</span>
