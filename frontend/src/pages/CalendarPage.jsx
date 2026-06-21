@@ -76,7 +76,7 @@ export default function CalendarPage() {
     ? `${year}-${String(month).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`
     : null
 
-  const handlePrevDay = () => {
+  const handlePrevDay = useCallback(() => {
     if (selectedDay === 1) {
       let newMonth = month - 1
       let newYear = year
@@ -88,9 +88,9 @@ export default function CalendarPage() {
     } else {
       setSelectedDay((d) => d - 1)
     }
-  }
+  }, [selectedDay, month, year])
 
-  const handleNextDay = () => {
+  const handleNextDay = useCallback(() => {
     const lastDay = new Date(year, month, 0).getDate()
     if (selectedDay === lastDay) {
       let newMonth = month + 1
@@ -102,7 +102,7 @@ export default function CalendarPage() {
     } else {
       setSelectedDay((d) => d + 1)
     }
-  }
+  }, [selectedDay, month, year])
 
   return (
     <div className="calendar">

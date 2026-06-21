@@ -52,3 +52,5 @@ bin/
 # 환경 변수
 .env
 .env.*
+# Claude 작업 컨텍스트 (로컬 전용)
+CLAUDE.md

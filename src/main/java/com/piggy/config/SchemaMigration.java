@@ -30,11 +30,12 @@ public class SchemaMigration implements ApplicationRunner {
         String upperTable = table.toUpperCase();
 
         // INFORMATION_SCHEMA에서 실제 CHECK 제약 이름을 조회해 정확히 삭제
+        // UPPER() 사용 — Hibernate가 소문자 테이블명으로 저장할 수도 있어서 대소문자 무관 매칭
         List<String> names = List.of();
         try {
             names = jdbc.queryForList(
                 "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS " +
-                "WHERE TABLE_NAME = ? AND CONSTRAINT_TYPE = 'CHECK'",
+                "WHERE UPPER(TABLE_NAME) = ? AND CONSTRAINT_TYPE = 'CHECK'",
                 String.class, upperTable
             );
         } catch (Exception e) {

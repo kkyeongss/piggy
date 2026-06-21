@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import Modal from './Modal.jsx'
 import { won } from '../util/format.js'
 import './DayDetailModal.css'
@@ -10,15 +11,27 @@ export default function DayDetailModal({ dateStr, items = [], onClose, onAdd, on
 
   const title = (
     <span className="day-title-nav">
-      <button type="button" className="day-nav-btn" onClick={onPrev} aria-label="이전 날">
+      <button type="button" className="day-nav-btn" onClick={onPrev} tabIndex={-1} aria-label="이전 날">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
       </button>
       <span>{dateLabel}</span>
-      <button type="button" className="day-nav-btn" onClick={onNext} aria-label="다음 날">
+      <button type="button" className="day-nav-btn" onClick={onNext} tabIndex={-1} aria-label="다음 날">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
       </button>
     </span>
   )
+
+  useEffect(() => {
+    const onKey = (e) => {
+      const tag = e.target.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+      if (e.key === 'ArrowLeft') { e.preventDefault(); onPrev() }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); onNext() }
+      else if (e.key === ' ' && onAdd) { e.preventDefault(); onAdd(dateStr) }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onPrev, onNext, onAdd, dateStr])
 
   const income = items.filter((t) => t.type === 'INCOME').reduce((s, t) => s + Number(t.amount), 0)
   const expense = items.filter((t) => t.type === 'EXPENSE').reduce((s, t) => s + Number(t.amount), 0)

@@ -24,6 +24,9 @@
 .day-nav-btn:hover {
   background: var(--bg-subtle);
 }
+.day-nav-btn:focus {
+  outline: none;
+}
 
 .day-summary {
   display: flex;
