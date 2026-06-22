@@ -36,7 +36,7 @@ public class CategoryService {
     public Category create(TransactionType type, String name, boolean savings) {
         Long userId = SecurityUtils.getCurrentUserId();
         String n = name.trim();
-        if (repository.existsByUserIdAndName(userId, n)) {
+        if (repository.existsByUserIdAndTypeAndName(userId, type, n)) {
             throw new ApiException(HttpStatus.CONFLICT, "이미 등록된 카테고리 이름이에요.");
         }
         return repository.save(new Category(userId, type, n, savings));
@@ -49,13 +49,14 @@ public class CategoryService {
         Category category = repository.findById(id)
                 .filter(c -> c.getUserId().equals(userId))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없어요."));
-        if (repository.existsByUserIdAndNameAndIdNot(userId, n, id)) {
+        if (repository.existsByUserIdAndTypeAndNameAndIdNot(userId, category.getType(), n, id)) {
             throw new ApiException(HttpStatus.CONFLICT, "이미 등록된 카테고리 이름이에요.");
         }
         String oldName = category.getName();
+        TransactionType type = category.getType();
         category.update(n, savings);
         if (!oldName.equals(n)) {
-            transactionRepository.bulkRenameCategory(userId, oldName, n);
+            transactionRepository.bulkRenameCategory(userId, type, oldName, n);
         }
         return category;
     }

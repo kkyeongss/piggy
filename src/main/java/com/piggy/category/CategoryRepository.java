@@ -11,9 +11,9 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByUserIdOrderByNameAsc(Long userId);
 
-    boolean existsByUserIdAndName(Long userId, String name);
+    boolean existsByUserIdAndTypeAndName(Long userId, TransactionType type, String name);
 
-    boolean existsByUserIdAndNameAndIdNot(Long userId, String name, Long id);
+    boolean existsByUserIdAndTypeAndNameAndIdNot(Long userId, TransactionType type, String name, Long id);
 
     List<Category> findByUserIdAndSavingsTrue(Long userId);
 

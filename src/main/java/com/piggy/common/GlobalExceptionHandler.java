@@ -24,4 +24,10 @@ public class GlobalExceptionHandler {
                 .orElse("입력값을 확인해주세요.");
         return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneric(Exception e) {
+        return ResponseEntity.status(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("서버 오류가 발생했어요. 잠시 후 다시 시도해주세요."));
+    }
 }

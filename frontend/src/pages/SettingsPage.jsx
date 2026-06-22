@@ -22,7 +22,8 @@ export default function SettingsPage({ onLogout }) {
   const handleReset = async (target) => {
     setResetting(true)
     try {
-      await fetch(`/api/reset/${target}`, { method: 'DELETE', credentials: 'include' })
+      const res = await fetch(`/api/reset/${target}`, { method: 'DELETE', credentials: 'include' })
+      if (!res.ok) throw new Error()
       setConfirming(null)
       setResetDone(target)
       setTimeout(() => setResetDone(null), 2000)
